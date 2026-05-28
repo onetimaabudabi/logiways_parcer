@@ -42,6 +42,7 @@ import parsers.logoper as logoper_parser
 import parsers.tk_logistika as tk_logistika_parser
 import parsers.garant_intermodal as garant_intermodal_parser
 import parsers.sansko as sansko_parser
+import parsers.panda as panda_parser
 
 '''
 Мармед - Контейнерное Агенство
@@ -181,7 +182,8 @@ def parse_all(paths=None):
                 segments += path["parser"].parse(files[0])
     '''
 
-    segments += eurosib_parse.parse()
+    #segments += eurosib_parse.parse()
+    segments += panda_parser.parse("data/Панда.pdf")
     # Санско
     #segments += sansko_parser.parse("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf")
 

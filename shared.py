@@ -278,6 +278,9 @@ port_dict = {
     "Zhanjiang": "Чжаньцзян",
     "Zhapu": "Чжапу",
     "Zhenjiang": "Дженжианг",
+    "Kawasaki": "Кавасаки",
+    "Toyama": "Тояма",
+    "Chiba": "Тиба",
  }
 
 route_dict = {

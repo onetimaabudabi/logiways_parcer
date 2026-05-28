@@ -2351,7 +2351,7 @@ def start_download_coordinates(client):
 # --- Пример использования для test.logiways.ru ---
 if __name__ == "__main__":
     # Инициализация клиента для тестового стенда
-    client = LogiwaysClient(base_url="https://logiways.ru")
+    client = LogiwaysClient(base_url="https://test.logiways.ru")
 
     # --- Аутентификация (как в исходном коде, но с тестовым номером) ---
     print("\n=== Запрос SMS-кода ===")
