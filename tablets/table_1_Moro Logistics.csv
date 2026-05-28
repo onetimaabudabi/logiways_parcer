@@ -1,0 +1,59 @@
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
+"Rates to Russia, updated on 08/08/2025(*Cancellation fee: usd 200/400 after space releasing)",,,,,,,,,,,,,,,,,,
+POL,POD,Carrier,SOC,,,,COC,,,ETD/Validity,Direct or indirect,Free Time,Remarks,,,,,
+,,,20GP,40HQ,20RF,40RF,20GP,40HQ,40RF,,,,,,,,,
+Nansha,SPB FCT,TM,3300,4350,5825,6525,3700,4600,7125,23-Aug,"Direct(Arctic
+Route)",14 days,"FILO, Include DTHC, sbj to doc-usd
+60, 3rd kind of dthc; if lack of
+container, will need to add cost.",,,,,
+Shanghai,,,3300,4350,5825,6525,3700,4600,7125,27-Aug,,,,,,,,
+Rizhao,,,3300,4350,5825,6525,3700,4600,7125,29-Aug,,,,,,,,
+Tianjin/Xingang,,,3500,4550,6025,6725,3900,4800,7325,30-Aug,,,,,,,,
+Qingdao,,,3390,4470,/,/,3790,4720,/,feeder,Via Rizhao,,,,,,,
+Ningbo,,,3600,4710,/,/,4000,4960,/,feeder,Via Shanghai,,,,,,,
+Xiamen,,,3600,4850,/,/,4000,5100,/,feeder,Via Shanghai,,,,,,,
+Taicang,SPB FCT/PLP,Huaxin,3000,4150,/,/,3500,4550,/,30-Aug,Direct(Suez),14 days,"FILO, include Dthc, Sbj to doc, rls
+100, 3rd kind of dthc",,,,,
+Ningbo,,,3150,4350,/,/,3650,4750,/,feeder,Via Taicang,,,,,,,
+Tianjin,,,3400,4750,/,/,3900,5150,/,feeder,Via Taicang,,,,,,,
+Dalian,,,3390,4695,/,/,3890,5095,/,feeder,Via Taicang,,,,,,,
+Qingdao,SPB CTSP,Mohill Line,,/,,/,/,,/,3900,5000,8085,"2025/08/21 Lady
+Doris 2502W",,Via Port Said East,,14 days,"FILO, include DTHC, sbj to doc, rls
+100, 3rd kind of dthc"
+Ningbo,,,,/,,/,/,,/,3900,5000,8085,"2025/08/23 Lady
+Doris 2502W",,,,,
+Nansha,,,,/,,/,/,,/,3900,5000,8085,"2025/08/26 Lady
+Doris 2502W",,,,,
+Qingdao,SPB PLP,OVP,,/,,/,/,,/,4305,5653,by request,"27-Aug CHANG
+SHENG JI 8
+V.2503W",,Direct(Suez),,14 days,"FILO, include Dthc, Sbj to doc, rls
+100, 3rd kind of dthc"
+Shanghai,,,,/,,/,/,,/,4305,5653,,"30-Aug CHANG
+SHENG JI 8
+V.2503W",,,,,
+Ningbo,,,,/,,/,/,,/,4305,5653,,"01-Sep CHANG
+SHENG JI 8
+V.2503W",,,,,
+Nansha,,,,/,,/,/,,/,4305,5653,,"04-Sep CHANG
+SHENG JI 8
+V.2503W",,,,,
+Mundra,SPB PLP,M-LINE,,/,,/,/,,/,3800,5000,/,19-Aug,,Direct(Suez),,14 days,"FILO, Include DTHC, sbj to doc-usd
+50, rls-usd 50, 3rd kind of dthc"
+Nhava Sheva,SPB PLP,,,/,,/,/,,/,3800,5000,,17-Aug,,,,,
+Jebel Ali,SPB PLP,,,/,,/,/,,/,4000,5600,,"13,23-Aug",,,,,
+POL,POD,,Carrier,,"COC(FIFO)
+20'GP | 40'HQ",,,,,ETD,,,,Direct or indirect,,Free Time,,
+Taicang,Novorossiysk(NLE),,XHL,,3000,,,4100,,2025/08/24 XIN HE LU 2 2504W,,,,Direct,,14 days,,
+Nansha,,,,,3000,,,4100,,2025/08/27 XIN HE LU 2 2504W,,,,,,,,
+Ningbo/Qingdao,,,,,3000,,,4100,,Feeder,,,,Via Taicang,,,,
+Nanjing/Tianjin,,,,,3150,,,4400,,Feeder,,,,Via Taicang,,,,
+Bangkok,,,,,3300,,,4700,,Feeder,,,,Via Taicang,,,,
+"Laem Chabang/Ho
+Chiminh/Haiphong",,,,,3300,,,4700,,Feeder,,,,Via Taicang,,,,
+"Port
+Klang/Taiwan/Japan",,,,,3300,,,4700,,Feeder,,,,Via Taicang,,,,
+Ningbo,Novorossiysk(NLE),,FESCO,,/,,,4150,,20-Aug,,,,Direct,,14 days,,
+Qingdao,,,,,3505,,,4903,,27-Aug,,,,,,,,
+Shanghai,,,,,3505,,,4903,,30-Aug,,,,,,,,
+Ningbo,,,,,3505,,,4903,,1-Sep,,,,,,,,
+Nansha,,,,,3505,,,4903,,4-Sep,,,,,,,,

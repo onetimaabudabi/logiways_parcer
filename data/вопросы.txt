@@ -1,0 +1,13 @@
+RusTrans - два файла с тарифами, какой смотрим? включаем надбавки за опасные грузы и другую инфу? охрана, почему два значения?
+Marmed-container- много доп инфы
+ТрансКонтейнер - условия КО и КП
+Torgmoll - примечания, правый столбец, detention
+Mohill -  V/V ETD, Route, Remarks
+HS CHINA LIMITED -  RATE(почему две стоимости)	VALIDITY	ROUTE	REMARK
+
+RusTrans морской + жд
+Torgmoll морской
+Mohill морской
+ТрансКонтейнер морской + жд
+Marmed-container морской
+HS CHINA LIMITED морской

@@ -1,0 +1,65 @@
+ANALIZ SOOTVETSTVIJA KOMPANIJ V FAILE I API
+
+================================================================================
+
+Kompanii v tariff_analysis_TEST.xlsx: 15
+   170 | Ametist Line
+   804 | EuroSib
+   245 | FESCO
+    96 | GrandLog
+    62 | KHASAN
+    64 | Mohill Rus
+    18 | Shenzhen Space Logistics
+    36 | Shenzhen Wotu International
+    61 | Shenzhen Wotu International Logistics
+   116 | TLC Baltic Line
+   942 | Логопер
+    48 | ПОСЕЙДОН
+   405 | Рейл Траст
+   228 | РусТранс Групп
+   213 | ТрансКонтейнер
+
+
+Kompanii v API (companies.json): 27
+       | Amethyst
+       | Ametist Line
+       | EuroSib
+       | FESCO
+       | GW CHINA LIMITED
+       | GrandLog
+       | HS CHINA LIMITED
+       | Hesion Global Logistics
+       | KHASAN
+       | LCL
+       | Mohill Rus
+       | NingBo Y-STAR Logistics
+       | Shenzhen Eagleway Supply Chain Management
+       | Shenzhen Space Logistics
+       | Shenzhen Wotu International
+       | Shenzhen Wotu International Logistics
+       | Spacelog
+       | TLC Baltic Line
+       | TML
+       | Torgmoll
+       | UnknownCompany1
+       | Логопер
+       | Мармед - Контейнерное Агенство
+       | ПОСЕЙДОН
+       | Рейл Траст
+       | РусТранс Групп
+       | ТрансКонтейнер
+
+
+LISHNIE v API (12 kompanij):
+       | Amethyst
+       | GW CHINA LIMITED
+       | HS CHINA LIMITED
+       | Hesion Global Logistics
+       | LCL
+       | NingBo Y-STAR Logistics
+       | Shenzhen Eagleway Supply Chain Management
+       | Spacelog
+       | TML
+       | Torgmoll
+       | UnknownCompany1
+       | Мармед - Контейнерное Агенство

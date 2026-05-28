@@ -1,0 +1,185 @@
+﻿idx,line,start_point,end_point,amount,currency,container,matched,used_pattern
+0,FOB Shanghai/Suzhou to Selyatino R/F: USD 4400/40HQ,Shanghai/Suzhou,Selyatino,4400,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+1,FOB Ningbo/Yuyao/Cixi to Selyatino R/F: USD 4450/40HQ,Ningbo/Yuyao/Cixi,Selyatino,4450,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+2,FOB Qingdao/Linyi to Selyatino R/F: USD 4350/40HQ,Qingdao/Linyi,Selyatino,4350,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+3,FOB Tianjin/Cangzhou to Selyatino R/F: USD 4400/40HQ,Tianjin/Cangzhou,Selyatino,4400,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+5,FOB Shanghai/Suzhou to Elektrougli R/F: USD 4200/40HQ,Shanghai/Suzhou,Elektrougli,4200,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+6,FOB Ningbo/Cixi to Elektrougli R/F: USD 4200/40HQ,Ningbo/Cixi,Elektrougli,4200,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+7,FOB Qingdao/Linyi to Elektrougli R/F: USD 4100/40HQ,Qingdao/Linyi,Elektrougli,4100,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+8,FOB Tianjin/Cangzhou to Elektrougli R/F: USD 4150/40HQ,Tianjin/Cangzhou,Elektrougli,4150,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+10,FOB Qingdao to Selyatino R/F: USD 3600/40HQ,Qingdao,Selyatino,3600,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+11,FOB Jinan/Weihai to Selyatino R/F: USD 3900/40HQ,Jinan/Weihai,Selyatino,3900,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+12,FOB Linyi/Weifang to Selyatino R/F: USD 3750/40HQ,Linyi/Weifang,Selyatino,3750,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+13,FOB Yantai/Dongying to Selyatino R/F: USD 3850/40HQ,Yantai/Dongying,Selyatino,3850,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+16,FOB Shijiazhuang to Elektrougli R/F: USD 3750/40HQ,Shijiazhuang,Elektrougli,3750,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+17,FOB Beijing to Elektrougli R/F: USD 4050/40HQ,Beijing,Elektrougli,4050,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+18,FOB Qingdao/Jinan to Elektrougli R/F: USD 4000/40HQ,Qingdao/Jinan,Elektrougli,4000,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+19,FOB Tianjin to Elektrougli R/F: USD 3800/40HQ,Tianjin,Elektrougli,3800,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+23,FOB Qingdao to Selyatino R/F: USD 3850/40HQ,Qingdao,Selyatino,3850,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+24,FOB Jinan to Selyatino R/F: USD 3850/40HQ,Jinan,Selyatino,3850,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+25,FOB Weihai to Selyatino R/F: USD 4150/40HQ,Weihai,Selyatino,4150,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+26,FOB Linyi to Selyatino R/F: USD 3900/40HQ,Linyi,Selyatino,3900,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+28,FOB Guangzhou to Vorsino R/F: USD 4250/40HQ,Guangzhou,Vorsino,4250,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+29,FOB Shenzhen/Dongguan/Foshan/Zhongshan to Vorsino R/F: USD 4300/40HQ,Shenzhen/Dongguan/Foshan/Zhongshan,Vorsino,4300,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"
+30,FOB Chaozhou/Shantou to Vorsino R/F: USD 4700/40HQ,Chaozhou/Shantou,Vorsino,4700,USD,40HQ,True,"^\s*FOB\s+
+				(?P<start>.+?)\s+to\s+
+				(?P<end>.+?)\s+
+				(?:R/?F[:\s]*)?
+				(?:(?P<cur>USD|US\$|\$|EUR|€|RUB|руб)\s*)?
+				(?P<amount>[\d\s,\.]+)?
+				(?:\s*(?:/|per)?\s*(?P<cont>40HQ|40HC|20GP|20DC|40FT|40'))?
+				\s*$"

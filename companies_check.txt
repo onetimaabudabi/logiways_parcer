@@ -1,0 +1,40 @@
+Vsego kompanij v API: 27
+
+Proverka nalichiya klyuchevyh kompanij:
+======================================================================
+FOUND: Рейл Траст
+FOUND: РусТранс Групп
+FOUND: ПОСЕЙДОН
+FOUND: Логопер
+FOUND: ТрансКонтейнер
+
+
+Vse kompanii v API:
+======================================================================
+ 1. Shenzhen Wotu International
+ 2. Shenzhen Wotu International Logistics
+ 3. GrandLog
+ 4. TML
+ 5. KHASAN
+ 6. EuroSib
+ 7. Amethyst
+ 8. LCL
+ 9. NingBo Y-STAR Logistics
+10. Hesion Global Logistics
+11. UnknownCompany1
+12. Spacelog
+13. Shenzhen Space Logistics
+14. Shenzhen Eagleway Supply Chain Management
+15. GW CHINA LIMITED
+16. Мармед - Контейнерное Агенство
+17. ТрансКонтейнер
+18. РусТранс Групп
+19. HS CHINA LIMITED
+20. Torgmoll
+21. Mohill Rus
+22. TLC Baltic Line
+23. FESCO
+24. Логопер
+25. Ametist Line
+26. Рейл Траст
+27. ПОСЕЙДОН

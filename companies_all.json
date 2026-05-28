@@ -1,0 +1,114 @@
+[
+  {
+    "name": "ТрансКонтейнер",
+    "contact_first_name": "Иван",
+    "contact_last_name": "Иванов",
+    "phone": "+74957881717",
+    "email": "trcont@trcont.com",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "РусТранс Групп",
+    "contact_first_name": "Петр",
+    "contact_last_name": "Петров",
+    "phone": "+79818124015",
+    "email": "sales@rustrans-gr.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Посейдон",
+    "contact_first_name": "Алексей",
+    "contact_last_name": "Хахалов",
+    "phone": "+79664454616",
+    "email": "hs@inter-log.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Рейл Траст",
+    "contact_first_name": "Алексей",
+    "contact_last_name": "Алексеев",
+    "phone": "+74232568568",
+    "email": "zapros@railtrust.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Ametist Line",
+    "contact_first_name": "Виктор",
+    "contact_last_name": "Викторов",
+    "phone": "+78124164748",
+    "email": "sales@ametistline.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "FESCO",
+    "contact_first_name": "Екатерина",
+    "contact_last_name": "Екатеринова",
+    "phone": "+78002334499",
+    "email": "sales@fesco.com",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "TLC Baltic Line",
+    "contact_first_name": "Сергей",
+    "contact_last_name": "Сергеев",
+    "phone": "+78124016400",
+    "email": "import@t-lc.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Логопер",
+    "contact_first_name": "Мария",
+    "contact_last_name": "Маркова",
+    "phone": "+78005556060",
+    "email": "sale@logoper.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "KHASAN",
+    "contact_first_name": "Дмитрий",
+    "contact_last_name": "Дмитриев",
+    "phone": "+79153938136",
+    "email": "sales4@khasanllc.pro",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "EuroSib",
+    "contact_first_name": "Ольга",
+    "contact_last_name": "Ольгина",
+    "phone": "+78123268111",
+    "email": "transport@eurosib.biz",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "GrandLog",
+    "contact_first_name": "Сергей",
+    "contact_last_name": "Сергеев",
+    "phone": "+79241102424",
+    "email": "customs@grand-log.ru",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Mohill Rus",
+    "contact_first_name": "Roksana",
+    "contact_last_name": "Muradian",
+    "phone": "+79816869492",
+    "email": "roksana@mo-hill.com",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "ТК Логистика",
+    "contact_first_name": "Сергей",
+    "contact_last_name": "Сергеев",
+    "phone": "+79647221288",
+    "email": "clients@logistics-klt.com",
+    "languages": ["ru"]
+  },
+  {
+    "name": "Гарант Интермодал",
+    "contact_first_name": "Иваника",
+    "contact_last_name": "Иванова",
+    "phone": "+74232302020",
+    "email": "office@garant-intermodal.com",
+    "languages": ["ru", "en"]
+  }
+]
