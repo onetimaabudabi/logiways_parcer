@@ -110,5 +110,21 @@
     "phone": "+74232302020",
     "email": "office@garant-intermodal.com",
     "languages": ["ru", "en"]
+  },
+  {
+    "name": "Panda Express Line",
+    "contact_first_name": "Алекс",
+    "contact_last_name": "Овся",
+    "phone": "+78005005292",
+    "email": "sales@pandexline.com",
+    "languages": ["ru", "en"]
+  },
+  {
+    "name": "Sunsko",
+    "contact_first_name": "Алексей",
+    "contact_last_name": "Овсянников",
+    "phone": "+79296813747",
+    "email": "a.ovsyannikov@sunskorus.ru",
+    "languages": ["ru", "en"]
   }
 ]
