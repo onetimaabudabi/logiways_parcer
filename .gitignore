@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Секреты / локальные настройки
+.claude/settings.local.json
+drive/credentials.json
+
+# .claude — папка скиллов остаётся в репозитории (передаётся со скиллом)
+!.claude/
+!.claude/skills/
+!.claude/skills/**
