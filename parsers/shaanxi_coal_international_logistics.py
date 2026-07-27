@@ -96,7 +96,6 @@ def parse_Shaanxi_Coal_International_Logistics(file_path: str, company_name="Sha
                     "transport_type": "rail",
                     "start_point": f"{pol_port}, {start_country}",
                     "end_point": f"{pod_port}, {end_country}",
-                    "final_destination": f"All, {end_country}",
 
                     "container_type": "40HQ",
                     "weight_limit": container_size_dict.get("40HQ", ""),

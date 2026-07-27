@@ -71,7 +71,6 @@ def add_tariff_entry_HS_CHINA_LIMITED(result, region, pod, pol, rate, validity, 
                         "transport_type": "sea",
                         "start_point": f"{pol_r}, {get_country(pol_r)}",  # Порт отправления
                         "end_point": f"{pod_r}, {region_dict.get(region,region)}",      # Порт назначения
-                        "final_destination": f"All, {region_dict.get(region,region)}",
                         "container_type": container_type,
                         "weight_limit": container_size_dict.get(container_type,""),
                         "cost": tariff_value,

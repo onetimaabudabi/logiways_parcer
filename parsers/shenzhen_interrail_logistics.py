@@ -78,7 +78,6 @@ def parse_SHENZHEN_INTERRAIL_LOGISTICS(filepath: str):
                     "transport_type": "rail",
                     "start_point": f"{pol_port}, {start_country}",
                     "end_point": f"{pod_port}, {end_country}",
-                    "final_destination": f"All, {end_country}",
                     "container_type": container_type,
                     "weight_limit": container_size_dict.get(container_type, ""),
                     "cost": moscow_price,

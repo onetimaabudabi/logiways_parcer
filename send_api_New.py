@@ -243,7 +243,6 @@ class RouteSegmentCreate:
     transport_type: TransportType
     start_location_id: str
     end_location_id: str
-    final_destination_location_id: Optional[str] = None
     border_location_id: Optional[str] = None
     customs_location_id: Optional[str] = None
     duration_min_days: Optional[int] = None
@@ -1626,20 +1625,16 @@ def build_segments_from_excel_OLD(df, client, company_id):
     for _, row in df.iterrows():
         start_point = row["start_point"].split(",")
         end_point = row["end_point"].split(",")
-        final_destination_point = row["final_destination"].split(",")
         
         start_location = start_point[0]
         end_location = end_point[0]
-        final_destination_location = final_destination_point[0] if final_destination_location[0] != "All" else None
         
         start_id = client.find_location_id_by_name(start_location)
         end_id = client.find_location_id_by_name(end_location)
-        final_destination_location_id = client.find_location_id_by_name(final_destination_location) if final_destination_location is not None else None
-
+        
         start_location_type = row.get("start_location_type", LocationType.CITY)
         end_location_type = row.get("end_location_type", LocationType.CITY)
-        final_destination_location_type = row.get("final_destination_location_type", LocationType.CITY)
-
+        
         if start_loc_id is None:
             start_loc_obj = LocationsCreate(
                 name=start_location,
@@ -1656,14 +1651,7 @@ def build_segments_from_excel_OLD(df, client, company_id):
             )
             end_loc_id = client.create_locations(end_loc_obj)
         
-        if final_destination_location_id is None and final_destination_location is not None:
-            final_destination_obj = LocationsCreate(
-                name=final_destination_location,
-                country_code=CountryCodeType(final_destination_point[1]),
-                location_type=final_destination_location_type
-            )
-            final_destination_location_id = client.create_locations(final_destination_obj)
-
+        
         segment_key = build_segment_key(
             company_id,
             row["transport_type"],
@@ -1672,13 +1660,12 @@ def build_segments_from_excel_OLD(df, client, company_id):
         )
         
         if not start_loc_id or not end_loc_id:
-            print(f"Не удалось найти|создать ID локаций для строки {index}: {row.get('start_point')} -> {row.get('end_point')}. Пропускаем.")
+            print(f"Не удалось найти|создать ID локаций для строки {_}: {row.get('start_point')} -> {row.get('end_point')}. Пропускаем.")
             continue
 
         segment = RouteSegmentCreate(
             start_location_id=start_loc_id,
             end_location_id=end_loc_id,
-            final_destination_location_id=final_destination_location_id,
             border_location_id=None,
             customs_location_id=None,
             transport_type=TransportType(row["transport_type"]),
@@ -2351,7 +2338,7 @@ def start_download_coordinates(client):
 # --- Пример использования для test.logiways.ru ---
 if __name__ == "__main__":
     # Инициализация клиента для тестового стенда
-    client = LogiwaysClient(base_url="https://test.logiways.ru")
+    client = LogiwaysClient(base_url="https://logiways.ru")
 
     # --- Аутентификация (как в исходном коде, но с тестовым номером) ---
     print("\n=== Запрос SMS-кода ===")

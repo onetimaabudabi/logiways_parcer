@@ -137,7 +137,6 @@ def parse_NingBo_YSTAR_Logistics(file_path: str):
                         "transport_type": "sea",
                         "start_point": f"{pol_port}, {start_country}",
                         "end_point": f"{pod_port}, {end_country}",
-                        "final_destination": f"All, {end_country}",
                         "container_type": container_type,
                         "weight_limit": container_size_dict.get(container_type, ""),
                         "cost": cost,

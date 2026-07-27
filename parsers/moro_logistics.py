@@ -202,7 +202,6 @@ def parse_MoroLogistics(pdf_tables: list, company_name="Moro Logistics"):
                             "transport_type": "sea",
                             "start_point": f"{pol_port}, {start_country}",
                             "end_point": f"{pod_port}, {end_country}",
-                            "final_destination": f"All, {end_country}",
                             "container_type": cont_type,
                             "weight_limit": container_size_dict.get(cont_type, ""),
                             "cost": cost,

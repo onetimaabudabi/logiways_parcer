@@ -204,7 +204,6 @@ def parse_LCL(file_path: str):
 				"transport_type": "rail",
 				"start_point": f"{pol_port}, {get_country(pol_port)}",
 				"end_point": f"{pod_port}, {get_country(pod_port)}",
-				"final_destination": f"All, {get_country(pod_port)}",
 				"container_type": container,
 				"weight_limit": container_size_dict.get(container, ""),
 				"cost": amount,

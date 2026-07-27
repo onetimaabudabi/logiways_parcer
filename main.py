@@ -183,7 +183,9 @@ def parse_all(paths=None):
     '''
 
     #segments += eurosib_parse.parse()
-    segments += panda_parser.parse("data/Панда.pdf")
+    #segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 30.04.2026.pdf")
+    #segments += panda_parser.parse("data/Панда.pdf")
+    segments += mohill_parse.parse("data/Notice MOHILL Line Far East JUNE (25.05).xlsx")
     # Санско
     #segments += sansko_parser.parse("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf")
 

@@ -16,7 +16,6 @@ class TariffSegment:
     start_point: str
     end_point: str
     container_type: str
-    final_destination: str = None
     weight_limit: Any = None
     min_weight_kg: Any = None
     max_weight_kg: Any = None
@@ -35,7 +34,6 @@ class TariffSegment:
     valid_from: Optional[str] = None
     valid_to: Optional[str] = None
 
-    final_destination_location_type: Optional[str] = None
     end_location_type: Optional[str] = None
     start_location_type: Optional[str] = None
 
@@ -43,8 +41,6 @@ class TariffSegment:
     parent_start_location_type: Optional[str] = None
     parent_end_location: Optional[str] = None
     parent_end_location_type: Optional[str] = None
-    parent_final_destination_location: Optional[str] = None
-    parent_final_destination_location_type: Optional[str] = None
 
     stopovers_location: Optional[str] = None
     stopovers_location_type: Optional[str] = None

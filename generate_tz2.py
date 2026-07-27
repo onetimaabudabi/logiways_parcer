@@ -336,7 +336,7 @@ for f in ["departure_dates — даты отправлений;",
     new_paragraphs.append(C(t(f)))
 
 new_paragraphs.append(BT(t("Поля географической иерархии:")))
-for f in ["start_location_type, end_location_type, final_destination_location_type — типы локаций (port, rail_station, city, terminal, border, customs, warehouse);",
+for f in ["start_location_type, end_location_type — типы локаций (port, rail_station, city, terminal, border, customs, warehouse);",
           "parent_start_location, parent_end_location — родительские локации (город для порта);",
           "stopovers_location, stopovers_location_type, stopovers_location_country — промежуточные порты перевалки;",
           "dropoff_location, dropoff_location_type — пункты сдачи контейнеров;",

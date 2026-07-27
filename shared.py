@@ -281,6 +281,7 @@ port_dict = {
     "Kawasaki": "Кавасаки",
     "Toyama": "Тояма",
     "Chiba": "Тиба",
+    "Vrangel Bay": "Терминал Врангель",
  }
 
 route_dict = {
