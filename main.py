@@ -44,6 +44,23 @@ import parsers.garant_intermodal as garant_intermodal_parser
 import parsers.sansko as sansko_parser
 import parsers.panda as panda_parser
 
+# --- Парсеры, добавленные позже (все поддерживают parse() без аргументов) ---
+import parsers.ametist_dropoff as ametist_dropoff_parser
+import parsers.grandlog_terminal as grandlog_terminal_parser
+import parsers.grandlog_wagon as grandlog_wagon_parser
+import parsers.khasan_docx as khasan_docx_parser
+import parsers.logoper_new as logoper_new_parser
+import parsers.mohill_new as mohill_new_parser
+import parsers.neco_line as neco_line_parser
+import parsers.ppk1_import as ppk1_import_parser
+import parsers.railtrust_sinokor as railtrust_sinokor_parser
+import parsers.rustrans_group as rustrans_group_parser
+import parsers.sea_rail_operator as sea_rail_operator_parser
+import parsers.tdg as tdg_parser
+import parsers.tml_income as tml_income_parser
+import parsers.transcontainer_vietnam as transcontainer_vietnam_parser
+
+
 '''
 Мармед - Контейнерное Агенство
 HS CHINA LIMITED
@@ -189,7 +206,7 @@ def parse_all(paths=None):
     # Санско
     #segments += sansko_parser.parse("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf")
 
-    '''
+    
     # Гарант Интермодал - 5 файлов
     segments += garant_intermodal_parser.parse("data/01.04.-30.04.-Все-порты-жд-Москва (1).pdf")
     segments += garant_intermodal_parser.parse("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf")
@@ -255,12 +272,102 @@ def parse_all(paths=None):
     segments += unknown_company3_parser.parse(TransportCompanies)
     segments += unknown_company2_parser.parse(paths["UnknownCompany2"])
     segments += shenzhen_interrail_logistics_parser.parse(paths["SHENZHEN_INTERRAIL"])
-    '''
+    
 
     return segments_to_df(segments)
 
+# ============================================================================
+# Полный прогон всех парсеров.
+#
+# Историческая parse_all() оставлена как есть: в ней активен ровно один вызов,
+# остальные 51 закомментированы или лежат внутри '''-блоков.
+# Ниже — реестр, где каждый парсер вызывается изолированно: падение одного
+# не срывает весь прогон, а попадает в отчёт.
+# ============================================================================
+TC_XLSX = "Транспортные компании.xlsx"
+
+# (метка, вызываемое, аргументы) — аргументы пустые там, где парсер сам ищет файл
+PARSER_REGISTRY = [
+    # --- парсеры с автопоиском файла ---
+    ("ametist_dropoff", ametist_dropoff_parser.parse, ()),
+    ("grandlog_terminal", grandlog_terminal_parser.parse, ()),
+    ("grandlog_wagon", grandlog_wagon_parser.parse, ()),
+    ("khasan_docx", khasan_docx_parser.parse, ()),
+    ("logoper_new", logoper_new_parser.parse, ()),
+    ("mohill_new", mohill_new_parser.parse, ()),
+    ("neco_line", neco_line_parser.parse, ()),
+    ("ppk1_import", ppk1_import_parser.parse, ()),
+    ("railtrust_sinokor", railtrust_sinokor_parser.parse, ()),
+    ("rustrans_group", rustrans_group_parser.parse, ()),
+    ("sea_rail_operator", sea_rail_operator_parser.parse, ()),
+    ("tdg", tdg_parser.parse, ()),
+    ("tml_income", tml_income_parser.parse, ()),
+    ("transcontainer_vietnam", transcontainer_vietnam_parser.parse, ()),
+    # --- парсеры с явными путями ---
+    ("logoper", logoper_parser.parse, ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 30.04.2026.pdf",)),
+    ("panda", panda_parser.parse, ("data/Панда.pdf",)),
+    ("sansko", sansko_parser.parse, ("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf",)),
+    ("garant_intermodal_1", garant_intermodal_parser.parse, ("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf",)),
+    ("garant_intermodal_2", garant_intermodal_parser.parse, ("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
+    ("garant_intermodal_3", garant_intermodal_parser.parse, ("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf",)),
+    ("garant_intermodal_4", garant_intermodal_parser.parse, ("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
+    ("railtrust", railtrust_parser.parse, ("data/Прайс Рейл Траст с 01.03.26.pdf",)),
+    ("ametist_line", ametist_line_parser.parse, ("data/February 2026 Rates (2).pdf",)),
+    ("global_logistic", global_logistic_parser.parse, ("data/Dear Baksanovaig.docx",)),
+    ("fesco", fesco_parser.parse, (PATHS_old["Fesco"],)),
+    ("poseidon", poseidon_parser.parse, (PATHS_old["Poseidon"],)),
+    ("transcontainer", transcontainer_parse.parse, (PATHS_old["TransContainer"],)),
+    ("rustrans", rustrans_parse.parse, (PATHS_old["RusTrans"],)),
+    ("marmedcontainer", marmedcontainer_parse.parse, (PATHS_old["MarmedContainer"],)),
+    ("hs_china_limited", HS_CHINA_LIMITED_parse.parse, (PATHS_old["HS_CHINA_LIMITED"],)),
+    ("torgmoll", Torgmoll_parse.parse, (PATHS_old["Torgmoll"],)),
+    ("mohill", mohill_parse.parse, ("data/Notice MOHILL Line Far East JUNE (25.05).xlsx",)),
+    ("tk_logistika", tk_logistika_parser.parse, ()),
+    ("tml", tml_parser.parse, (TC_XLSX,)),
+    ("gw_china_limited", gw_china_limited_parser.parse, (TC_XLSX,)),
+    ("shenzhen_eagleway", shenzhen_eagleway_supply_chain_management_parser.parse, (TC_XLSX,)),
+    ("lcl", lcl_parser.parse, (TC_XLSX,)),
+    ("amethyst", amethyst_parser.parse, (TC_XLSX,)),
+    ("hesion_global_logistics", hesion_global_logistics_parser.parse, (TC_XLSX,)),
+    ("ningbo_ystar_logistics", ningbo_ystar_logistics_parser.parse, (TC_XLSX,)),
+    ("unknown_company1", unknown_company1_parser.parse, (TC_XLSX,)),
+    ("spacelog", spacelog_parser.parse, (TC_XLSX,)),
+    ("transforever", transforever_international_forwarding_parser.parse, (TC_XLSX,)),
+    ("shaanxi_coal", shaanxi_coal_international_logistics_parser.parse, (TC_XLSX,)),
+    ("unknown_company4", unknown_company4_parser.parse, (TC_XLSX,)),
+    ("unknown_company3", unknown_company3_parser.parse, (TC_XLSX,)),
+    ("shenzhen_space_logistics", shenzhen_space_logistics_parser.parse, (TC_XLSX,)),
+    ("shenzhen_wotu_international", shenzhen_wotu_international_parser.parse, (TC_XLSX,)),
+]
+
+
+def parse_all_full(verbose: bool = True):
+    """Запускает все парсеры из PARSER_REGISTRY и возвращает (df, отчёт)."""
+    import io, contextlib
+    segments, report = [], []
+    for label, fn, args in PARSER_REGISTRY:
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                segs = fn(*args)
+            segments += segs
+            report.append((label, len(segs), None))
+        except FileNotFoundError as e:
+            report.append((label, 0, f"нет файла: {str(e)[:70]}"))
+        except Exception as e:
+            report.append((label, 0, f"{type(e).__name__}: {str(e)[:70]}"))
+    if verbose:
+        print(f"{'парсер':30} {'сегм.':>6}  примечание")
+        for label, n, err in report:
+            print(f"  {label:28} {n:>6}  {err or ''}")
+        okn = sum(1 for _, _, e in report if e is None)
+        print(f"\nПарсеров отработало: {okn}/{len(report)}; сегментов: {len(segments)}")
+        for label, n, err in report:
+            if err: print(f"  ПРОПУЩЕН {label}: {err}")
+    return segments_to_df(segments), report
+
+
 def start_parse():
-    df_all = parse_all()
+    df_all, _report = parse_all_full()
     with pd.ExcelWriter("tariff_analysis_TEST.xlsx") as writer:
         df_all.to_excel(writer, sheet_name="Raw Data", index=False)
     exit(0)

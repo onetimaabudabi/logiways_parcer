@@ -213,17 +213,39 @@ class Tokens:
     token_type: str = "Bearer"
 
 # --- Новые структуры для транспортных компаний ---
+# Допустимые значения organization_type
+ORGANIZATION_TYPE_LEGAL_ENTITY = "legal_entity"
+ORGANIZATION_TYPE_INDIVIDUAL_ENTREPRENEUR = "individual_entrepreneur"
+ORGANIZATION_TYPES = (ORGANIZATION_TYPE_LEGAL_ENTITY,
+                      ORGANIZATION_TYPE_INDIVIDUAL_ENTREPRENEUR)
+
+# Сетевые настройки для запросов создания организаций
+REQUEST_TIMEOUT = 30          # секунд на запрос
+MAX_RETRIES = 3               # попыток при таймауте/сетевой ошибке/5xx
+RETRY_BACKOFF = 2.0           # множитель паузы между попытками
+
+# Файл со списком компаний: companies_all.json — основной, companies.json — запасной
+COMPANIES_FILES = ("companies_all.json", "companies.json")
+
+
 @dataclass
 class TransportCompaniesCreate:
-    name: str
+    """Тело запроса POST /admin/transport-companies.
+
+    ВНИМАНИЕ: порядок полей изменён относительно присланной спецификации.
+    В dataclass поле без значения по умолчанию не может идти после поля
+    со значением, поэтому обязательные contact_first_name/contact_last_name
+    подняты выше inn. На JSON это не влияет — там порядок не важен.
+
+    Поля phone, email, languages, logo_url, is_active в этом эндпоинте
+    не принимаются и убраны.
+    """
+    title: str
     contact_first_name: str
     contact_last_name: str
-    phone: str
-    email: str
-    logo_url: Optional[str] = None
+    inn: Optional[str] = None
     contact_middle_name: Optional[str] = None
-    languages: Optional[List[str]] = None
-    is_active: bool = True
+    organization_type: str = ORGANIZATION_TYPE_LEGAL_ENTITY
 
 # --- Cтруктура для локаций---
 @dataclass
@@ -431,26 +453,82 @@ class LogiwaysClient:
 
     # --- Создание транспортной компании ---
     def create_transport_companies(self, transport_companies: TransportCompaniesCreate) -> Optional[Dict]:
-        """
-        Создает организацию (бывшую транспортную компанию).
-        POST /admin/transport-companies
+        """Создаёт организацию. POST /admin/transport-companies.
+
+        Тело запроса содержит только поля, которые принимает эндпоинт:
+        title, inn, contact_first_name, contact_last_name,
+        contact_middle_name, organization_type.
+        Незаполненные необязательные поля не отправляются вовсе — сервер
+        обычно отвергает inn=null со схемой string.
+
+        При 409 (организация уже существует) возвращает существующую запись,
+        найденную по названию, а не None.
         """
         if not self.tokens:
             print("Требуется аутентификация")
             return None
+
+        if transport_companies.organization_type not in ORGANIZATION_TYPES:
+            print(f"Недопустимый organization_type: "
+                  f"{transport_companies.organization_type!r}; "
+                  f"допустимы {ORGANIZATION_TYPES}")
+            return None
+
         url = f"{self.base_url}/admin/transport-companies"
-        payload = asdict(transport_companies)
-        try:
-            response = self.session.post(url, json=payload, headers=self._headers())
+        payload = {k: v for k, v in asdict(transport_companies).items() if v is not None}
+
+        last_error = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            response = None
+            try:
+                response = self.session.post(
+                    url, json=payload, headers=self._headers(), timeout=REQUEST_TIMEOUT
+                )
+            except requests.exceptions.RequestException as e:
+                last_error = e
+                if attempt < MAX_RETRIES:
+                    delay = RETRY_BACKOFF ** attempt
+                    print(f"Сеть недоступна ({type(e).__name__}), попытка "
+                          f"{attempt}/{MAX_RETRIES}, повтор через {delay:.0f} c")
+                    time.sleep(delay)
+                    continue
+                print(f"Ошибка создания организации {payload.get('title')!r}: {e}")
+                return None
+
             if response.status_code == 401:
                 return self._handle_401(self.create_transport_companies, transport_companies)
-            response.raise_for_status()
+
+            if response.status_code == 409:
+                print(f"Организация {payload.get('title')!r} уже существует (409) — "
+                      f"ищем существующую по названию")
+                existing_id = self.get_transport_company_by_name(transport_companies.title)
+                return {"id": existing_id, "title": transport_companies.title,
+                        "already_exists": True} if existing_id else None
+
+            if response.status_code == 422:
+                # Несовпадение схемы — показываем, что именно не устроило сервер
+                print(f"Организация {payload.get('title')!r} отклонена (422). "
+                      f"Отправлено: {payload}")
+                print(f"Ответ сервера: {response.text[:500]}")
+                return None
+
+            if response.status_code >= 500 and attempt < MAX_RETRIES:
+                delay = RETRY_BACKOFF ** attempt
+                print(f"Сервер вернул {response.status_code}, попытка "
+                      f"{attempt}/{MAX_RETRIES}, повтор через {delay:.0f} c")
+                time.sleep(delay)
+                continue
+
+            try:
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                print(f"Ошибка создания организации {payload.get('title')!r}: {e}")
+                print(f"Ответ сервера: {response.text[:500]}")
+                return None
             return response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"Ошибка создания организации: {e}")
-            if response:
-                print(f"Ответ сервера: {response.text}")
-            return None
+
+        print(f"Не удалось создать организацию {payload.get('title')!r}: {last_error}")
+        return None
 
     # --- Создание локации ---
     def create_locations(self, location: LocationsCreate) -> str:
@@ -2371,33 +2449,46 @@ if __name__ == "__main__":
     #start_download_coordinates(client)
     #exit(0)
     
-    try:
-        companies = json.load(open('companies.json', encoding='utf-8'))
-    except FileNotFoundError:
-        print("Файл companies.json не найден. Создаем пустой список.")
-        companies = []
+    companies = []
+    for _fname in COMPANIES_FILES:
+        try:
+            companies = json.load(open(_fname, encoding='utf-8'))
+            print(f"Список компаний загружен из {_fname}: {len(companies)} записей")
+            break
+        except FileNotFoundError:
+            continue
+    if not companies:
+        print(f"Не найден ни один из файлов {COMPANIES_FILES}. Список пуст.")
 
     companiess_ids = {}
     for trans_company in companies:
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
         if trans_company_id is None:
             print("\n=== Создание новой организации ===")
+            # title обязателен; берём name (совпадает с колонкой company
+            # в Excel), при его отсутствии — catalog_name.
+            _title = trans_company.get("name") or trans_company.get("catalog_name")
+            if not _title:
+                print("Пропуск записи без названия:", trans_company)
+                continue
+            _inn = trans_company.get("inn")
             new_org = TransportCompaniesCreate(
-                name=trans_company["name"],
-                contact_first_name=trans_company["contact_first_name"],
-                contact_last_name=trans_company["contact_last_name"],
-                phone=trans_company["phone"],
-                email=trans_company["email"],
-                languages=trans_company["languages"],
-                is_active=True
+                title=_title,
+                inn=str(_inn) if _inn else None,
+                contact_first_name=trans_company.get("contact_first_name") or "Тест",
+                contact_last_name=trans_company.get("contact_last_name") or "Тестов",
+                contact_middle_name=trans_company.get("contact_middle_name") or None,
+                organization_type=trans_company.get(
+                    "organization_type", ORGANIZATION_TYPE_LEGAL_ENTITY
+                ),
             )
             created_org = client.create_transport_companies(new_org)
             if created_org:
                 trans_company_id = created_org.get('id')
                 print(f"Организация создана. ID: {trans_company_id}")
             else:
-                print("Не удалось создать организацию.", trans_company["name"])
-        companiess_ids[trans_company["name"]] = trans_company_id
+                print("Не удалось создать организацию.", _title)
+        companiess_ids[_title if trans_company_id else trans_company.get("name", "")] = trans_company_id
 
     
     df = pd.read_excel("tariff_analysis_TEST.xlsx")#tariff_analysis_ALL_NEW
