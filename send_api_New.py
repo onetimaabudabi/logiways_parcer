@@ -1,5 +1,6 @@
 import requests
 import re
+import unicodedata
 from typing import Optional, Dict, List, Any
 from dataclasses import dataclass, asdict, field
 from enum import Enum
@@ -415,6 +416,11 @@ class LogiwaysClient:
         self._credentials: Optional[tuple] = None
         # Защита от рекурсии в _handle_401.
         self._auth_retry_active = False
+        # Кэш полного списка организаций (см. load_all_companies)
+        self._companies_cache: Optional[List[Dict]] = None
+        self._companies_index: Dict[str, Dict] = {}
+        # Компании, которые не удалось ни найти, ни создать
+        self.unresolved_companies: List[Dict] = []
 
     def _headers(self) -> Dict[str, str]:
         """Формирование заголовков с токеном авторизации."""
@@ -609,7 +615,7 @@ class LogiwaysClient:
                           f"повтор через {delay:.0f} c")
                     time.sleep(delay)
                     continue
-                print(f"Ошибка создания организации {payload.get('title')!r}: {e}")
+                print(f"Ошибка создания организации {payload.get('name')!r}: {e}")
                 return None
 
             if response.status_code == 401:
@@ -623,17 +629,39 @@ class LogiwaysClient:
                 print(f"Организация {payload.get('name')!r} отклонена (422). Отправлено: {payload}")
                 print(f"Ответ сервера: {response.text[:500]}")
                 return None
-            if response.status_code >= 500 and attempt < MAX_RETRIES:
-                delay = RETRY_BACKOFF ** attempt
-                print(f"Сервер вернул {response.status_code}, попытка {attempt}/{MAX_RETRIES}, "
-                      f"повтор через {delay:.0f} c")
-                time.sleep(delay)
-                continue
+            if response.status_code >= 500:
+                # 500 на создании почти всегда означает конфликт в БД:
+                # организация уже есть, но серверный ?search= её не нашёл.
+                # Поэтому сначала перечитываем полный список и ищем локально,
+                # и только потом тратим попытки на повтор.
+                print(f"Сервер вернул {response.status_code} на создании "
+                      f"{payload.get('name')!r} — проверяем, не существует ли она уже")
+                existing = self.find_company_id_local(transport_companies.name)
+                if not existing:
+                    self.load_all_companies(force=True)
+                    existing = self.find_company_id_local(transport_companies.name)
+                if existing:
+                    print(f"  → организация уже существует, берём её ID")
+                    return {"id": existing, "name": transport_companies.name,
+                            "already_exists": True}
+                if attempt < MAX_RETRIES:
+                    delay = RETRY_BACKOFF ** attempt
+                    print(f"  Не найдена; повтор {attempt}/{MAX_RETRIES} через {delay:.0f} c")
+                    time.sleep(delay)
+                    continue
+                print(f"  Организация {payload.get('name')!r} не создана и не найдена — "
+                      f"пропускаем, запись попадёт в отчёт")
+                print(f"  Ответ сервера: {response.text[:300]}")
+                self.unresolved_companies.append(
+                    {"name": transport_companies.name, "status": response.status_code,
+                     "payload": payload, "response": response.text[:300]}
+                )
+                return None
 
             try:
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
-                print(f"Ошибка создания организации {payload.get('title')!r}: {e}")
+                print(f"Ошибка создания организации {payload.get('name')!r}: {e}")
                 print(f"Ответ сервера: {response.text[:500]}")
                 return None
             return response.json()
@@ -672,6 +700,84 @@ class LogiwaysClient:
             return None
 
     # --- Получение организации по ID ---
+    @staticmethod
+    def _norm_company(value) -> str:
+        """Название к сравнимому виду: регистр, кавычки, орг-формы, пробелы."""
+        text = unicodedata.normalize("NFC", str(value or "")).casefold()
+        text = re.sub(r"[«»\"'`]", " ", text)
+        text = re.sub(r"\b(ооо|оао|зао|пао|ао|ип|llc|ltd|co|inc|gmbh)\b", " ", text)
+        text = re.sub(r"[^\w]+", " ", text, flags=re.UNICODE)
+        return re.sub(r"\s+", " ", text).strip()
+
+    def load_all_companies(self, force: bool = False) -> List[Dict]:
+        """Забирает ВЕСЬ список организаций и кэширует его.
+
+        Серверный ?search= в ряде случаев отдаёт пустой результат для
+        существующих компаний (регистр, кириллица, лишние пробелы), поэтому
+        надёжнее один раз выкачать список и сопоставлять локально.
+        """
+        if self._companies_cache is not None and not force:
+            return self._companies_cache
+
+        collected, page, size = [], 1, 100
+        while True:
+            url = f"{self.base_url}/admin/transport-companies?page={page}&size={size}"
+            try:
+                response = self.session.get(url, headers=self._headers(),
+                                            timeout=self.timeout)
+            except requests.exceptions.RequestException as e:
+                print(f"  Не удалось загрузить список организаций: {e}")
+                break
+            if response.status_code == 401:
+                result = self._handle_401(self.load_all_companies, force)
+                return result if result is not None else (self._companies_cache or [])
+            if response.status_code >= 400:
+                print(f"  Список организаций: HTTP {response.status_code}; "
+                      f"{response.text[:200]}")
+                break
+            try:
+                items = response.json().get("items", [])
+            except ValueError:
+                break
+            collected.extend(items)
+            if len(items) < size:
+                break
+            page += 1
+
+        self._companies_cache = collected
+        self._companies_index = {}
+        for item in collected:
+            self._companies_index.setdefault(self._norm_company(item.get("name")), item)
+        print(f"  Загружен список организаций: {len(collected)} шт.")
+        return collected
+
+    def find_company_id_local(self, name: str) -> Optional[str]:
+        """Ищет организацию в кэше по нормализованному названию."""
+        self.load_all_companies()
+        key = self._norm_company(name)
+        if not key:
+            return None
+
+        item = self._companies_index.get(key)
+        if item:
+            print(f"  ✓ Найдена по нормализованному имени: {item.get('name')} "
+                  f"(ID={item['id'][:8]}...)")
+            return item["id"]
+
+        # Подстрока — только если кандидат ровно один, иначе можно слить
+        # разные компании («Рейл Траст» и «Рейл Траст Синокор»).
+        candidates = [it for k, it in self._companies_index.items()
+                      if key and (key in k or k in key)]
+        if len(candidates) == 1:
+            item = candidates[0]
+            print(f"  ✓ Найдена по частичному совпадению: {item.get('name')} "
+                  f"(ID={item['id'][:8]}...)")
+            return item["id"]
+        if len(candidates) > 1:
+            print(f"  ! Неоднозначное совпадение для {name!r}: "
+                  f"{[c.get('name') for c in candidates[:5]]} — пропускаем")
+        return None
+
     def get_transport_company_by_name(self, company_search: str) -> str:
         """
         Поиск транспортной организации по названию.
@@ -713,8 +819,9 @@ class LogiwaysClient:
                 for item in items[:5]:
                     print(f"    - {item.get('name')}")
             else:
-                print(f"  ✗ Компания '{company_search}' не найдена (поиск вернул пустой результат).")
-            return None
+                print(f"  ✗ Поиск по '{company_search}' вернул пустой результат — "
+                      f"пробуем полный список")
+            return self.find_company_id_local(company_search)
         except requests.exceptions.RequestException as e:
             print(f"  ✗ Ошибка поиска компании '{company_search}': {e}")
             return None
@@ -2560,8 +2667,15 @@ if __name__ == "__main__":
         print(f"Не найден ни один из файлов {COMPANIES_FILES}. Список пуст.")
 
     companiess_ids = {}
+    # Один раз выкачиваем весь список организаций: дальше поиск идёт локально
+    # и не зависит от капризов серверного ?search=.
+    client.load_all_companies(force=True)
+
+    found = created = skipped = 0
     for trans_company in companies:
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
+        if trans_company_id:
+            found += 1
         if trans_company_id is None:
             print("\n=== Создание новой организации ===")
             _name = trans_company.get("name") or trans_company.get("catalog_name")
@@ -2587,7 +2701,29 @@ if __name__ == "__main__":
                 print(f"Организация создана. ID: {trans_company_id}")
             else:
                 print("Не удалось создать организацию.", _name)
+            if trans_company_id:
+                created += 1
+                # новая организация должна попасть в кэш, иначе следующая
+                # компания с похожим именем снова уйдёт в создание
+                client.load_all_companies(force=True)
+            else:
+                skipped += 1
         companiess_ids[trans_company.get("name") or trans_company.get("catalog_name", "")] = trans_company_id
+
+    print(f"\n=== Итог по организациям ===")
+    print(f"найдено: {found} | создано: {created} | не удалось: {skipped} | всего: {len(companies)}")
+    if client.unresolved_companies:
+        print(f"\nНЕ УДАЛОСЬ идентифицировать ({len(client.unresolved_companies)}) — "
+              f"проверьте вручную на {client.base_url}/admin/transport-companies:")
+        for item in client.unresolved_companies:
+            print(f"  - {item['name']!r} (HTTP {item['status']})")
+            print(f"      отправляли: {item['payload']}")
+        try:
+            with open("unresolved_companies.json", "w", encoding="utf-8") as fh:
+                json.dump(client.unresolved_companies, fh, ensure_ascii=False, indent=2)
+            print("  Подробности сохранены в unresolved_companies.json")
+        except OSError as e:
+            print(f"  Не удалось сохранить отчёт: {e}")
 
     
     df = pd.read_excel("tariff_analysis_TEST.xlsx")#tariff_analysis_ALL_NEW
