@@ -206,6 +206,25 @@ class Departure:
     capacity_status: Optional[str] = None
     source_row: Optional[dict] = field(default_factory=dict)
 
+# --- Настройки авторизации ---------------------------------------------------
+# Контракт /api/users/login не описан в openapi.json из репозитория (там только
+# SMS-схема). Имена полей и формат заголовка вынесены в константы: если сервер
+# ждёт другое, правится одна строка.
+LOGIN_ENDPOINT = "/api/users/login"
+LOGIN_USERNAME_FIELD = "login"      # варианты: "login", "email"
+LOGIN_PASSWORD_FIELD = "password"
+
+# В openapi.json схема безопасности — APIKeyHeader с именем "authorization",
+# то есть сервер ожидал ГОЛЫЙ токен. Если admin-эндпоинты начнут отдавать 401,
+# верните AUTH_HEADER_SCHEME = "".
+AUTH_HEADER_NAME = "Authorization"
+AUTH_HEADER_SCHEME = "Bearer"
+
+LOGIWAYS_USERNAME = os.getenv("LOGIWAYS_USERNAME", "LWJOD24699")
+LOGIWAYS_PASSWORD = os.getenv("LOGIWAYS_PASSWORD", "268087")
+LOGIWAYS_BASE_URL = os.getenv("LOGIWAYS_BASE_URL", "https://test.logiways.ru")
+
+
 @dataclass
 class Tokens:
     refresh_token: str
@@ -213,18 +232,14 @@ class Tokens:
     token_type: str = "Bearer"
 
 # --- Новые структуры для транспортных компаний ---
-# Допустимые значения organization_type
 ORGANIZATION_TYPE_LEGAL_ENTITY = "legal_entity"
 ORGANIZATION_TYPE_INDIVIDUAL_ENTREPRENEUR = "individual_entrepreneur"
 ORGANIZATION_TYPES = (ORGANIZATION_TYPE_LEGAL_ENTITY,
                       ORGANIZATION_TYPE_INDIVIDUAL_ENTREPRENEUR)
 
-# Сетевые настройки для запросов создания организаций
-REQUEST_TIMEOUT = 30          # секунд на запрос
-MAX_RETRIES = 3               # попыток при таймауте/сетевой ошибке/5xx
-RETRY_BACKOFF = 2.0           # множитель паузы между попытками
-
-# Файл со списком компаний: companies_all.json — основной, companies.json — запасной
+REQUEST_TIMEOUT = 30
+MAX_RETRIES = 3
+RETRY_BACKOFF = 2.0
 COMPANIES_FILES = ("companies_all.json", "companies.json")
 
 
@@ -232,13 +247,9 @@ COMPANIES_FILES = ("companies_all.json", "companies.json")
 class TransportCompaniesCreate:
     """Тело запроса POST /admin/transport-companies.
 
-    ВНИМАНИЕ: порядок полей изменён относительно присланной спецификации.
-    В dataclass поле без значения по умолчанию не может идти после поля
-    со значением, поэтому обязательные contact_first_name/contact_last_name
-    подняты выше inn. На JSON это не влияет — там порядок не важен.
-
-    Поля phone, email, languages, logo_url, is_active в этом эндпоинте
-    не принимаются и убраны.
+    Порядок полей отличается от спецификации: в dataclass поле без значения
+    по умолчанию не может идти после поля со значением, поэтому обязательные
+    contact_* подняты выше inn. На JSON это не влияет.
     """
     title: str
     contact_first_name: str
@@ -366,6 +377,7 @@ class LogiwaysClient:
     def __init__(self, base_url: str = "https://test.logiways.ru"):
         self.base_url = base_url.rstrip("/")
         self.tokens: Optional[Tokens] = None
+        self._credentials: Optional[tuple] = None
         self.session = requests.Session()
         # Отключаем проверку SSL для тестового стенда (как в оригинале)
         self.session.verify = False
@@ -378,18 +390,61 @@ class LogiwaysClient:
             "accept": "application/json"
         }
         if self.tokens:
-            headers["authorization"] = f"{self.tokens.access_token}"
+            value = self.tokens.access_token
+            if AUTH_HEADER_SCHEME:
+                value = f"{AUTH_HEADER_SCHEME} {value}"
+            headers[AUTH_HEADER_NAME] = value
         return headers
 
     def _handle_401(self, func, *args, **kwargs):
         """Обработка 401 ошибки с попыткой обновить токен."""
         if not self.refresh_token():
+            creds = getattr(self, "_credentials", None)
+            if creds and self.login(*creds):
+                print("Токен переполучен через повторный логин.")
+                return func(*args, **kwargs)
             print("Не удалось обновить токен.")
             return None
         # Повторяем исходный запрос с новым токеном
         return func(*args, **kwargs)
 
     # --- Методы аутентификации (без изменений, но URL теперь ведут на test.) ---
+    def login(self, username: str, password: str) -> Optional[Tokens]:
+        """Авторизация по логину и паролю: POST /api/users/login."""
+        url = f"{self.base_url}{LOGIN_ENDPOINT}"
+        payload = {LOGIN_USERNAME_FIELD: username, LOGIN_PASSWORD_FIELD: password}
+        try:
+            response = self.session.post(url, json=payload, timeout=REQUEST_TIMEOUT)
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка соединения при логине: {e}")
+            return None
+
+        if response.status_code == 422:
+            print(f"Логин отклонён (422). Ответ сервера: {response.text[:500]}")
+            print(f"Отправлено: {payload!r} — проверьте LOGIN_USERNAME_FIELD")
+            return None
+        if response.status_code == 401:
+            print("Логин отклонён: неверные учётные данные (401).")
+            return None
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка логина: {e}; ответ: {response.text[:300]}")
+            return None
+
+        data = response.json()
+        self.tokens = Tokens(
+            access_token=data.get("access_token"),
+            refresh_token=data.get("refresh_token", ""),
+            token_type=data.get("token_type", "Bearer"),
+        )
+        self._credentials = (username, password)
+        if not self.tokens.access_token:
+            print(f"В ответе логина нет access_token: {data}")
+            self.tokens = None
+            return None
+        return self.tokens
+
     def signup(self, first_name: str, last_name: str, phone: str, middle_name: Optional[str] = None) -> Optional[Tokens]:
         url = f"{self.base_url}/api/users/signup"
         payload = {
@@ -453,43 +508,29 @@ class LogiwaysClient:
 
     # --- Создание транспортной компании ---
     def create_transport_companies(self, transport_companies: TransportCompaniesCreate) -> Optional[Dict]:
-        """Создаёт организацию. POST /admin/transport-companies.
-
-        Тело запроса содержит только поля, которые принимает эндпоинт:
-        title, inn, contact_first_name, contact_last_name,
-        contact_middle_name, organization_type.
-        Незаполненные необязательные поля не отправляются вовсе — сервер
-        обычно отвергает inn=null со схемой string.
-
-        При 409 (организация уже существует) возвращает существующую запись,
-        найденную по названию, а не None.
-        """
+        """Создаёт организацию. POST /admin/transport-companies."""
         if not self.tokens:
             print("Требуется аутентификация")
             return None
-
         if transport_companies.organization_type not in ORGANIZATION_TYPES:
-            print(f"Недопустимый organization_type: "
-                  f"{transport_companies.organization_type!r}; "
-                  f"допустимы {ORGANIZATION_TYPES}")
+            print(f"Недопустимый organization_type: {transport_companies.organization_type!r}")
             return None
 
         url = f"{self.base_url}/admin/transport-companies"
+        # None-поля не отправляем: схема ждёт string, а null даёт 422
         payload = {k: v for k, v in asdict(transport_companies).items() if v is not None}
 
         last_error = None
         for attempt in range(1, MAX_RETRIES + 1):
-            response = None
             try:
-                response = self.session.post(
-                    url, json=payload, headers=self._headers(), timeout=REQUEST_TIMEOUT
-                )
+                response = self.session.post(url, json=payload,
+                                             headers=self._headers(), timeout=REQUEST_TIMEOUT)
             except requests.exceptions.RequestException as e:
                 last_error = e
                 if attempt < MAX_RETRIES:
                     delay = RETRY_BACKOFF ** attempt
-                    print(f"Сеть недоступна ({type(e).__name__}), попытка "
-                          f"{attempt}/{MAX_RETRIES}, повтор через {delay:.0f} c")
+                    print(f"Сеть недоступна ({type(e).__name__}), попытка {attempt}/{MAX_RETRIES}, "
+                          f"повтор через {delay:.0f} c")
                     time.sleep(delay)
                     continue
                 print(f"Ошибка создания организации {payload.get('title')!r}: {e}")
@@ -497,25 +538,19 @@ class LogiwaysClient:
 
             if response.status_code == 401:
                 return self._handle_401(self.create_transport_companies, transport_companies)
-
             if response.status_code == 409:
-                print(f"Организация {payload.get('title')!r} уже существует (409) — "
-                      f"ищем существующую по названию")
-                existing_id = self.get_transport_company_by_name(transport_companies.title)
-                return {"id": existing_id, "title": transport_companies.title,
-                        "already_exists": True} if existing_id else None
-
+                print(f"Организация {payload.get('title')!r} уже существует (409)")
+                existing = self.get_transport_company_by_name(transport_companies.title)
+                return {"id": existing, "title": transport_companies.title,
+                        "already_exists": True} if existing else None
             if response.status_code == 422:
-                # Несовпадение схемы — показываем, что именно не устроило сервер
-                print(f"Организация {payload.get('title')!r} отклонена (422). "
-                      f"Отправлено: {payload}")
+                print(f"Организация {payload.get('title')!r} отклонена (422). Отправлено: {payload}")
                 print(f"Ответ сервера: {response.text[:500]}")
                 return None
-
             if response.status_code >= 500 and attempt < MAX_RETRIES:
                 delay = RETRY_BACKOFF ** attempt
-                print(f"Сервер вернул {response.status_code}, попытка "
-                      f"{attempt}/{MAX_RETRIES}, повтор через {delay:.0f} c")
+                print(f"Сервер вернул {response.status_code}, попытка {attempt}/{MAX_RETRIES}, "
+                      f"повтор через {delay:.0f} c")
                 time.sleep(delay)
                 continue
 
@@ -2416,32 +2451,20 @@ def start_download_coordinates(client):
 # --- Пример использования для test.logiways.ru ---
 if __name__ == "__main__":
     # Инициализация клиента для тестового стенда
-    client = LogiwaysClient(base_url="https://logiways.ru")
+    # Базовый URL берём из окружения. Раньше здесь стоял https://logiways.ru
+    # (прод), где эндпоинтов /api/users/request-sms и verify-sms нет — отсюда
+    # были 404 при SMS-авторизации.
+    client = LogiwaysClient(base_url=LOGIWAYS_BASE_URL)
 
-    # --- Аутентификация (как в исходном коде, но с тестовым номером) ---
-    print("\n=== Запрос SMS-кода ===")
-    # Используйте тестовый номер, который есть в системе test.logiways.ru
-    test_phone = "+79617811422"
-    sms_response = client.request_sms(phone=test_phone)
-    if not sms_response:
-        print("Не удалось запросить SMS-код! Возможно, номер не зарегистрирован.")
-        print("Попробуйте сначала выполнить signup с этим номером.")
-        # exit(1) # Раскомментируйте для остановки, если нужно
-    else:
-        print(f"SMS запрошено. Статус: {sms_response.get('status')}, TTL: {sms_response.get('ttl')} сек")
-
-    # На практике здесь нужно ввести код из SMS
-    sms_code = "777777"
-
-    print("\n=== Верификация SMS-кода ===")
-    verified_tokens = client.verify_sms(
-        phone_number=test_phone,
-        code=sms_code
-    )
-    if not verified_tokens:
-        exit(0)
-
-    print(f"Верификация успешна. Access_token: {verified_tokens.access_token[:20]}...")
+    # --- Аутентификация по логину и паролю ---
+    # SMS-методы (signup / request_sms / verify_sms) остаются в классе, но из
+    # основного потока убраны: они нужны только для первичной регистрации.
+    print("\n=== Авторизация по логину и паролю ===")
+    tokens = client.login(LOGIWAYS_USERNAME, LOGIWAYS_PASSWORD)
+    if not tokens:
+        print("Авторизация не удалась — дальнейшие запросы бессмысленны.")
+        exit(1)
+    print(f"Авторизация успешна. Access_token: {tokens.access_token[:20]}...")
 
     #result = fill_location_coordinates(client, country_filter="RU", limit=1, yandex_api_key="94d3a1a8-fe5b-40ac-b063-62170967a277")
     
@@ -2465,8 +2488,6 @@ if __name__ == "__main__":
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
         if trans_company_id is None:
             print("\n=== Создание новой организации ===")
-            # title обязателен; берём name (совпадает с колонкой company
-            # в Excel), при его отсутствии — catalog_name.
             _title = trans_company.get("name") or trans_company.get("catalog_name")
             if not _title:
                 print("Пропуск записи без названия:", trans_company)
@@ -2488,7 +2509,7 @@ if __name__ == "__main__":
                 print(f"Организация создана. ID: {trans_company_id}")
             else:
                 print("Не удалось создать организацию.", _title)
-        companiess_ids[_title if trans_company_id else trans_company.get("name", "")] = trans_company_id
+        companiess_ids[trans_company.get("name") or trans_company.get("catalog_name", "")] = trans_company_id
 
     
     df = pd.read_excel("tariff_analysis_TEST.xlsx")#tariff_analysis_ALL_NEW
