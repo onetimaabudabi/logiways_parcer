@@ -1,23 +1,114 @@
 [
   {
     "name": "Ametist Line",
+    "catalog_name": "Ametist Line",
     "parsers": [
+      "amethyst",
       "ametist_dropoff",
       "ametist_line"
     ],
     "inn": null,
     "ogrn": null,
-    "website": "https://ametistline.ru/",
-    "email": "sales@ametistline.ru",
-    "phone": "+79112993489",
+    "website": "https://ametistline.ru/ru/",
+    "email": "office@ametistline.ru",
+    "emails": [
+      "office@ametistline.ru",
+      "sales@ametistline.ru"
+    ],
+    "phone": "+78124164748",
     "address": null,
-    "contact_first_name": "Виктор",
-    "contact_last_name": "Викторов",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "Аметист",
+    "tariff_files": [
+      "ametist"
+    ],
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address"
+    ]
+  },
+  {
+    "name": "Eagleway logistic",
+    "catalog_name": "Eagleway logistic",
+    "parsers": [],
+    "inn": null,
+    "ogrn": null,
+    "website": "eagleway-logistic.group",
+    "email": "emile@eagleway-logistic.group",
+    "emails": [
+      "emile@eagleway-logistic.group"
+    ],
+    "phone": "+8613631391906",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address",
+      "parser"
+    ]
+  },
+  {
+    "name": "EuroSib",
+    "catalog_name": "Евросиб",
+    "parsers": [
+      "eurosib"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "eurosib.biz",
+    "email": "transport@eurosib.biz",
+    "emails": [
+      "transport@eurosib.biz"
+    ],
+    "phone": "+78123268111",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": [
+      "тарифы импорт",
+      "тарифы экспорт"
+    ],
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address"
+    ]
+  },
+  {
+    "name": "FESCO",
+    "catalog_name": "FESCO (ФИТ)",
+    "parsers": [
+      "fesco"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "www.fesco.ru",
+    "email": "sales@fesco.com",
+    "emails": [
+      "sales@fesco.com"
+    ],
+    "phone": "+78002334499",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": [
+      "Тарифы Феско"
+    ],
     "test": true,
     "missing": [
       "inn",
@@ -27,372 +118,466 @@
   },
   {
     "name": "Global Logistic",
+    "catalog_name": "Global Logistic",
     "parsers": [
       "global_logistic"
     ],
     "inn": null,
     "ogrn": null,
     "website": null,
-    "email": null,
-    "phone": null,
+    "email": "nicholas@mw-bd2.ltd",
+    "emails": [
+      "nicholas@mw-bd2.ltd"
+    ],
+    "phone": "+8618320413397",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
       "website",
-      "email",
-      "phone",
       "address"
     ]
   },
   {
     "name": "Mohill Rus",
+    "catalog_name": "Mohill",
     "parsers": [
       "mohill",
       "mohill_new"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "mo-hill.com",
     "email": "roksana@mo-hill.com",
+    "emails": [
+      "roksana@mo-hill.com"
+    ],
     "phone": "+79816869492",
     "address": null,
-    "contact_first_name": "Roksana",
-    "contact_last_name": "Muradian",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "Mohill",
+    "tariff_files": [
+      "тарифы"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
     "name": "NECO Line",
+    "catalog_name": "Neco line Asia (NLA)",
     "parsers": [
       "neco_line",
       "ppk1_import"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
-    "email": null,
-    "phone": null,
+    "website": "https://necoline.net/en/home/",
+    "email": "sales@necoline.net",
+    "emails": [
+      "sales@necoline.net"
+    ],
+    "phone": "+78124673780",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы NLA"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
-      "email",
-      "phone",
       "address"
     ]
   },
   {
     "name": "Panda Express Line",
+    "catalog_name": "Panda Express Line",
     "parsers": [
       "panda"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "www.pandexline.com",
     "email": "sales@pandexline.com",
+    "emails": [
+      "sales@pandexline.com"
+    ],
     "phone": "+78005005292",
     "address": null,
-    "contact_first_name": "Алекс",
-    "contact_last_name": "Овся",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": null,
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
     "name": "Sunsko",
+    "catalog_name": "Санко",
     "parsers": [
       "sansko"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "sunskorus.ru",
     "email": "a.ovsyannikov@sunskorus.ru",
-    "phone": "+79296813747",
+    "emails": [
+      "a.ovsyannikov@sunskorus.ru",
+      "m.loganin@sunskorus.ru"
+    ],
+    "phone": "+79167674479",
     "address": null,
-    "contact_first_name": "Алексей",
-    "contact_last_name": "Овсянников",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": null,
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "TLC Baltic Line",
+    "catalog_name": "TLC Baltic Line",
+    "parsers": [
+      "tcl_asia_line",
+      "tcl_baltic_line"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "www.t-lc.ru",
+    "email": "import@t-lc.ru",
+    "emails": [
+      "import@t-lc.ru"
+    ],
+    "phone": "+78124016400",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": [
+      "Тариф 1",
+      "Тарифы 2"
+    ],
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
       "address"
     ]
   },
   {
     "name": "TML RUS",
+    "catalog_name": "TML Logistics",
     "parsers": [
+      "tml",
       "tml_income"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "onetml.com",
     "email": "kirill@onetml.com",
+    "emails": [
+      "kirill@onetml.com"
+    ],
     "phone": "+74232302004",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "TML",
+    "tariff_files": null,
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
+    "name": "АТРАНС ГЛОБАЛ (Atrans Global)",
+    "catalog_name": "АТРАНС ГЛОБАЛ (Atrans Global)",
+    "parsers": [],
+    "inn": null,
+    "ogrn": null,
+    "website": "www.atransglobal.ru",
+    "email": "zapros@atransdv.ru",
+    "emails": [
+      "zapros@atransdv.ru"
+    ],
+    "phone": "+78003003700",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": [
+      "Тарифы"
+    ],
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address",
+      "parser"
+    ]
+  },
+  {
     "name": "Гарант Интермодал",
+    "catalog_name": "Гарант Интермодал / East Shipping Unity",
     "parsers": [
       "garant_intermodal"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "garant-intermodal.com",
     "email": "office@garant-intermodal.com",
+    "emails": [
+      "office@garant-intermodal.com"
+    ],
     "phone": "+74232302020",
     "address": null,
-    "contact_first_name": "Иваника",
-    "contact_last_name": "Иванова",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
     "name": "ГрандЛог",
+    "catalog_name": "ГрандЛог (GrandLog)",
     "parsers": [
+      "grandlog",
       "grandlog_terminal",
       "grandlog_wagon"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
-    "email": "Customs@grand-log.ru",
-    "phone": "+79243332894",
+    "website": "grand-log.ru",
+    "email": "customs@grand-log.ru",
+    "emails": [
+      "customs@grand-log.ru"
+    ],
+    "phone": "+79241102424",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "ООО «ГрандЛог»",
+    "tariff_files": [
+      "Тарифы 1",
+      "Тарифы 2",
+      "Тарифы 3",
+      "Тароифы 4"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
+    "name": "ДВЛК",
+    "catalog_name": "ДВЛК",
+    "parsers": [],
+    "inn": null,
+    "ogrn": null,
+    "website": "www.dvlk.su",
+    "email": "info@dvlk.su",
+    "emails": [
+      "info@dvlk.su"
+    ],
+    "phone": "+74232651945",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address",
+      "parser"
+    ]
+  },
+  {
     "name": "Логопер",
+    "catalog_name": "Логопер",
     "parsers": [
       "logoper",
       "logoper_new"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "https://logoper.ru/",
     "email": "sale@logoper.ru",
-    "phone": "+78005556060",
-    "address": null,
-    "contact_first_name": "Мария",
-    "contact_last_name": "Маркова",
-    "languages": [
-      "ru",
-      "en"
+    "emails": [
+      "sale@logoper.ru"
     ],
-    "source_xlsx_name": null,
-    "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "website",
-      "address"
-    ]
-  },
-  {
-    "name": "Оператор",
-    "parsers": [
-      "sea_rail_operator"
-    ],
-    "inn": null,
-    "ogrn": null,
-    "website": null,
-    "email": null,
     "phone": null,
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
-      "email",
       "phone",
       "address"
     ]
   },
   {
+    "name": "ОАО «Владморрыбпорт»",
+    "catalog_name": "ОАО «Владморрыбпорт»",
+    "parsers": [],
+    "inn": null,
+    "ogrn": null,
+    "website": "https://www.vsct.info/index/company/about.html",
+    "email": "client-manager@fishport.ru",
+    "emails": [
+      "client-manager@fishport.ru"
+    ],
+    "phone": "+74232057171",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address",
+      "parser"
+    ]
+  },
+  {
     "name": "Посейдон",
+    "catalog_name": "Посейдон",
     "parsers": [
       "poseidon"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
+    "website": "https://inter-log.ru/",
     "email": "hs@inter-log.ru",
+    "emails": [
+      "hs@inter-log.ru"
+    ],
     "phone": "+79664454616",
     "address": null,
-    "contact_first_name": "Алексей",
-    "contact_last_name": "Хахалов",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
     "name": "Рейл Траст",
+    "catalog_name": "Рейл траст",
     "parsers": [
-      "railtrust"
-    ],
-    "inn": null,
-    "ogrn": null,
-    "website": null,
-    "email": "zapros@railtrust.ru",
-    "phone": "+74232568568",
-    "address": null,
-    "contact_first_name": "Алексей",
-    "contact_last_name": "Алексеев",
-    "languages": [
-      "ru",
-      "en"
-    ],
-    "source_xlsx_name": null,
-    "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "website",
-      "address"
-    ]
-  },
-  {
-    "name": "Рейл Траст Синокор",
-    "parsers": [
+      "railtrust",
       "railtrust_sinokor"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
-    "email": null,
-    "phone": null,
+    "website": "https://rail-trust.ru/",
+    "email": "zapros@railtrust.ru",
+    "emails": [
+      "zapros@railtrust.ru"
+    ],
+    "phone": "+74232568568",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": null,
+    "tariff_files": [
+      "Тарифы",
+      "Тарифы 1"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
-      "email",
-      "phone",
       "address"
     ]
   },
   {
     "name": "РусТранс Групп",
+    "catalog_name": "РусТранс Групп",
     "parsers": [
+      "rustrans",
       "rustrans_group"
     ],
     "inn": null,
     "ogrn": null,
-    "website": "https://rustrans-gr.ru",
-    "email": "sae@rustrans-gr.ru",
-    "phone": "+79816869492",
+    "website": "rustrans-gr.ru",
+    "email": "sales@rustrans-gr.ru",
+    "emails": [
+      "sales@rustrans-gr.ru"
+    ],
+    "phone": "+79818124015",
     "address": null,
-    "contact_first_name": "Петр",
-    "contact_last_name": "Петров",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "RusTrans",
+    "tariff_files": [
+      "тариф 1",
+      "тариф 2"
+    ],
     "test": true,
     "missing": [
       "inn",
@@ -402,80 +587,120 @@
   },
   {
     "name": "ТрансКонтейнер",
+    "catalog_name": "ПАО \"ТрансКонтейнер\"",
     "parsers": [
+      "transcontainer",
       "transcontainer_vietnam"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
-    "email": "trcont@trcont.com",
+    "website": "www.trcont.com",
+    "email": "salesdepartment@trcont.ru",
+    "emails": [
+      "salesdepartment@trcont.ru",
+      "trcont@trcont.com"
+    ],
     "phone": "+74957881717",
     "address": null,
-    "contact_first_name": "Иван",
-    "contact_last_name": "Иванов",
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "ПАО «ТрансКонтейнер»",
+    "tariff_files": [
+      "Тарифы ВСК",
+      "ставки выдачи",
+      "тарифы ВМКТ",
+      "тарифы вьетнам"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
       "address"
     ]
   },
   {
     "name": "Транспорт Девелопмент Групп",
+    "catalog_name": "TRANSPORT DEVELOPMENT GROUP",
     "parsers": [
       "tdg"
     ],
     "inn": null,
     "ogrn": null,
-    "website": null,
-    "email": null,
-    "phone": "+73432877202",
+    "website": "https://trdg.ru/",
+    "email": "LupandinOV@trdg.ru",
+    "emails": [
+      "LupandinOV@trdg.ru"
+    ],
+    "phone": "+79222212201",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "Транспорт Девелопмент групп",
+    "tariff_files": [
+      "Тарифы TDG"
+    ],
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "website",
-      "email",
       "address"
     ]
   },
   {
-    "name": "Хасан",
-    "parsers": [
-      "khasan_docx"
-    ],
+    "name": "ХАБ ШИППЕНГ",
+    "catalog_name": "ХАБ ШИППЕНГ",
+    "parsers": [],
     "inn": null,
     "ogrn": null,
-    "website": "www.khasanllc.pro",
-    "email": null,
-    "phone": "+79153938136",
+    "website": "hub-shipping.com",
+    "email": "marketing@hub-shipping.com",
+    "emails": [
+      "marketing@hub-shipping.com"
+    ],
+    "phone": "+74994554730",
     "address": null,
-    "contact_first_name": null,
-    "contact_last_name": null,
     "languages": [
       "ru",
       "en"
     ],
-    "source_xlsx_name": "KHASAN",
+    "tariff_files": null,
     "test": true,
     "missing": [
       "inn",
       "ogrn",
-      "email",
+      "address",
+      "parser"
+    ]
+  },
+  {
+    "name": "Хасан",
+    "catalog_name": "Хасан",
+    "parsers": [
+      "khasan",
+      "khasan_docx"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "https://khasanllc.pro/",
+    "email": "sales4@khasanllc.pro",
+    "emails": [
+      "sales4@khasanllc.pro"
+    ],
+    "phone": "+79153938136",
+    "address": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "tariff_files": [
+      "хасан 1"
+    ],
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
       "address"
     ]
   }
