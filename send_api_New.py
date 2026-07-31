@@ -259,6 +259,21 @@ class Tokens:
     token_type: str = "Bearer"
 
 # --- Новые структуры для транспортных компаний ---
+def fallback_contacts(company_name: str) -> tuple:
+    """Уникальные запасные телефон и email на основе названия компании.
+
+    Один и тот же +71234567890 / test@example.com у десятка компаний приводил
+    к 500: у сервера, судя по asyncpg-трейсбеку, уникальный индекс на этих
+    полях, и вторая же компания с тем же телефоном не создавалась.
+    """
+    digest = hashlib.md5(str(company_name).encode("utf-8")).hexdigest()
+    suffix = int(digest[:8], 16) % 10_000_000
+    slug = re.sub(r"[^a-z0-9]+", "-", str(company_name).lower()).strip("-") or "company"
+    # В slug остаётся только латиница, поэтому кириллические названия
+    # схлопывались в одну строку — добавляем хеш, чтобы адрес был уникален.
+    return f"+7{suffix:010d}"[:12], f"{slug[:30]}-{digest[:6]}@example.com"
+
+
 DEFAULT_PHONE = "+71234567890"
 DEFAULT_EMAIL = "test@example.com"
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$")
@@ -289,6 +304,15 @@ REQUEST_TIMEOUT = 30
 MAX_RETRIES = 3
 RETRY_BACKOFF = 2.0
 COMPANIES_FILES = ("companies_all.json", "companies.json")
+
+# Компании, которые сервер стабильно валит 500-й (unresolved_companies.json).
+# Список читается из файла, если он есть, и дополняется вручную здесь.
+SKIP_COMPANIES_500 = set()
+try:
+    with open("unresolved_companies.json", encoding="utf-8") as _fh:
+        SKIP_COMPANIES_500 |= {item["name"] for item in json.load(_fh)}
+except (OSError, ValueError, KeyError, TypeError):
+    pass
 
 
 @dataclass
@@ -885,6 +909,19 @@ class LogiwaysClient:
             print("  LOC [FIND] Требуется аутентификация")
             return None
 
+        location_name = str(location_name).strip() if location_name is not None else ""
+        if not location_name or location_name.lower() in ("nan", "none"):
+            print(f"  LOC [SKIP] пустое название локации ({location_name!r})")
+            return None
+
+        # location_type приходит None для dropoff/stopovers: в Excel эти колонки
+        # часто пустые. Без подстановки падало на location_type.lower().
+        if location_type is None or str(location_type).strip().lower() in ("", "nan", "none"):
+            location_type = LocationType.CITY.value
+            print(f"  LOC [WARN] location_type был пустым — подставлен "
+                  f"{location_type!r} для {location_name!r}")
+        location_type = str(location_type).strip()
+
         normalized_cc = normalize_country_code(country_code)
         print(f"  LOC [FIND] name='{location_name}' type='{location_type}' country='{country_code}' -> cc='{normalized_cc}' parent='{parent_location_id}'")
 
@@ -900,8 +937,10 @@ class LogiwaysClient:
             print(f"  LOC [SEARCH] Нашёл {len(locations)} по запросу '{location_name}'")
 
             for loc in locations:
-                loc_name = loc.get('name', '').lower()
-                loc_type = loc.get('location_type', '').lower()
+                # .get(key, '') вернёт None, если ключ есть со значением null,
+                # поэтому «or ''» обязателен.
+                loc_name = (loc.get('name') or '').lower()
+                loc_type = (loc.get('location_type') or '').lower()
                 loc_parent = loc.get('parent_location_id')
                 loc_cc = loc.get('country_code')
 
@@ -2101,12 +2140,18 @@ def build_segments_from_excel(df, client, company_id_dict=None):
 
         # --- Dropoff location fields ---
         dropoff_loc = get_value(row.get("dropoff_location", None), None)
-        dropoff_loc_type = get_value(row.get("dropoff_location_type", None), None)
+        # Пустой тип уронил бы find_location_id_by_name на .lower().
+        # Drop off — это всегда город сдачи контейнера.
+        dropoff_loc_type = get_value(row.get("dropoff_location_type", None), None) \
+            or LocationType.CITY.value
         dropoff_loc_country = get_value(row.get("dropoff_location_country", None), None)
 
         # --- Stopovers location fields ---
         stopovers_loc = get_value(row.get("stopovers_location", None), None)
-        stopovers_loc_type = get_value(row.get("stopovers_location_type", None), None)
+        # Промежуточные пункты в парсерах — порты перевалки; тип там почти
+        # никогда не заполнен, поэтому подставляем "port".
+        stopovers_loc_type = get_value(row.get("stopovers_location_type", None), None) \
+            or LocationType.PORT.value
         stopovers_loc_country = get_value(row.get("stopovers_location_country", None), None)
         stopovers_loc_sequence = get_value(row.get("sequence", 0), 0)
         parent_stopovers_loc = get_value(row.get("parent_stopovers_location", None), None)
@@ -2722,6 +2767,16 @@ if __name__ == "__main__":
 
     found = created = skipped = 0
     for trans_company in companies:
+        if trans_company.get("name") in SKIP_COMPANIES_500:
+            print(f"  [SKIP-500] {trans_company['name']!r} — в списке проблемных, "
+                  f"пробуем только найти, создавать не будем")
+            _cid = client.get_transport_company_by_name(trans_company["name"])
+            companiess_ids[trans_company["name"]] = _cid
+            if _cid:
+                found += 1
+            else:
+                skipped += 1
+            continue
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
         if trans_company_id:
             found += 1
@@ -2734,8 +2789,12 @@ if __name__ == "__main__":
             _inn = trans_company.get("inn")
             new_org = TransportCompaniesCreate(
                 name=_name,
-                phone=normalize_phone(trans_company.get("phone")),
-                email=normalize_email(trans_company.get("email")),
+                # Запасные значения делаем уникальными для каждой компании —
+                # общий +71234567890 приводил к 500 на уникальном индексе.
+                phone=normalize_phone(trans_company.get("phone"),
+                                      fallback_contacts(_name)[0]),
+                email=normalize_email(trans_company.get("email"),
+                                      fallback_contacts(_name)[1]),
                 contact_first_name=(trans_company.get("contact_first_name") or "").strip() or "Тест",
                 contact_last_name=(trans_company.get("contact_last_name") or "").strip() or "Тестов",
                 contact_middle_name=(trans_company.get("contact_middle_name") or "").strip() or None,
