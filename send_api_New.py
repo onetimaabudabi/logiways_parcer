@@ -218,7 +218,7 @@ LOGIN_PASSWORD_FIELD = "password"
 # то есть сервер ожидал ГОЛЫЙ токен. Если admin-эндпоинты начнут отдавать 401,
 # верните AUTH_HEADER_SCHEME = "".
 AUTH_HEADER_NAME = "Authorization"
-AUTH_HEADER_SCHEME = "Bearer"
+AUTH_HEADER_SCHEME = ""
 
 LOGIWAYS_USERNAME = os.getenv("LOGIWAYS_USERNAME", "LWJOD24699")
 LOGIWAYS_PASSWORD = os.getenv("LOGIWAYS_PASSWORD", "268087")
@@ -374,15 +374,20 @@ class RouteSegmentCoordinate:
 
 # --- Клиент API для test.logiways.ru ---
 class LogiwaysClient:
-    def __init__(self, base_url: str = "https://test.logiways.ru"):
+    def __init__(self, base_url: str = "https://test.logiways.ru",
+                 timeout: int = REQUEST_TIMEOUT):
         self.base_url = base_url.rstrip("/")
+        # Сессия создаётся первой: настройки ниже пишутся уже в неё.
+        self.session = requests.Session()
+        self.session.verify = False          # тестовый стенд без валидного SSL
+        requests.packages.urllib3.disable_warnings()
+
+        self.timeout = timeout
         self.tokens: Optional[Tokens] = None
         self._credentials: Optional[tuple] = None
-        self.session = requests.Session()
-        # Отключаем проверку SSL для тестового стенда (как в оригинале)
-        self.session.verify = False
-        # Подавляем предупреждения о SSL
-        requests.packages.urllib3.disable_warnings()
+        # Защита от рекурсии в _handle_401: пока идёт повторная попытка после
+        # 401, вложенные 401 не запускают новый цикл обновления токена.
+        self._auth_retry_active = False
 
     def _headers(self) -> Dict[str, str]:
         """Формирование заголовков с токеном авторизации."""
@@ -397,16 +402,45 @@ class LogiwaysClient:
         return headers
 
     def _handle_401(self, func, *args, **kwargs):
-        """Обработка 401 ошибки с попыткой обновить токен."""
-        if not self.refresh_token():
-            creds = getattr(self, "_credentials", None)
-            if creds and self.login(*creds):
-                print("Токен переполучен через повторный логин.")
-                return func(*args, **kwargs)
-            print("Не удалось обновить токен.")
+        """Обработка 401: ровно ОДНА попытка переполучить токен и повторить вызов.
+
+        Раньше здесь была бесконечная рекурсия: refresh_token() мог успешно
+        обновлять токен, но сервер всё равно отвечал 401 (например, из-за
+        неверного формата заголовка Authorization). Тогда func() вызывался
+        снова, снова получал 401, снова попадал сюда — и так до RecursionError.
+
+        Защита двухуровневая:
+          * kwargs["_retry"] — явный флаг, если вызывающий метод его передаёт;
+          * self._auth_retry_active — флаг на экземпляре, который взводится на
+            время повторного вызова. Любой вложенный 401 внутри этого вызова
+            сразу получает None и не запускает новый цикл.
+        """
+        retry_allowed = kwargs.pop("_retry", True)
+
+        if not retry_allowed or self._auth_retry_active:
+            print("Повторная авторизация уже выполнялась — прекращаем "
+                  f"(эндпоинт {getattr(func, '__name__', func)!r} всё ещё отдаёт 401). "
+                  "Проверьте AUTH_HEADER_SCHEME и права учётной записи.")
             return None
-        # Повторяем исходный запрос с новым токеном
-        return func(*args, **kwargs)
+
+        renewed = self.refresh_token()
+        if not renewed:
+            creds = self._credentials
+            if not creds:
+                print("Не удалось обновить токен: учётные данные для "
+                      "повторного логина не сохранены.")
+                return None
+            print("refresh_token не сработал — пробуем повторный логин.")
+            renewed = self.login(*creds)
+            if not renewed:
+                print("Повторный логин не удался. Прекращаем.")
+                return None
+
+        self._auth_retry_active = True
+        try:
+            return func(*args, **kwargs)
+        finally:
+            self._auth_retry_active = False
 
     # --- Методы аутентификации (без изменений, но URL теперь ведут на test.) ---
     def login(self, username: str, password: str) -> Optional[Tokens]:
@@ -414,7 +448,7 @@ class LogiwaysClient:
         url = f"{self.base_url}{LOGIN_ENDPOINT}"
         payload = {LOGIN_USERNAME_FIELD: username, LOGIN_PASSWORD_FIELD: password}
         try:
-            response = self.session.post(url, json=payload, timeout=REQUEST_TIMEOUT)
+            response = self.session.post(url, json=payload, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             print(f"Ошибка соединения при логине: {e}")
             return None
@@ -488,23 +522,61 @@ class LogiwaysClient:
             return None
 
     def refresh_token(self) -> Optional[Tokens]:
+        """Обновляет access_token. Одна попытка, без повторов.
+
+        Повторы здесь запрещены сознательно: этот метод вызывается из
+        _handle_401, и любой цикл внутри него складывался бы с внешним.
+        """
         if not self.tokens or not self.tokens.refresh_token:
             print("Нет refresh_token для обновления")
             return None
+
         url = f"{self.base_url}/api/users/refresh-token"
         payload = {"refresh_token": self.tokens.refresh_token}
         try:
-            response = self.session.post(url, json=payload)
-            if response.status_code == 401:
-                print("refresh_token недействителен")
-                return None
-            response.raise_for_status()
-            data = response.json()
-            self.tokens = Tokens(**data)
-            return self.tokens
+            response = self.session.post(url, json=payload, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
-            print(f"Ошибка обновления токена: {e}")
+            print(f"Ошибка соединения при обновлении токена: {type(e).__name__}: {e}")
             return None
+
+        if response.status_code in (401, 403):
+            print(f"refresh_token отклонён ({response.status_code}). "
+                  f"Ответ сервера: {response.text[:300]}")
+            self.tokens = None          # токен мёртв, дальше нужен полный логин
+            return None
+        if response.status_code == 404:
+            print("Эндпоинт /api/users/refresh-token отсутствует (404) — "
+                  "обновление токена недоступно, потребуется повторный логин.")
+            return None
+        if response.status_code == 422:
+            print(f"Обновление токена отклонено (422). "
+                  f"Ответ сервера: {response.text[:300]}")
+            return None
+
+        try:
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка обновления токена: {e}; ответ: {response.text[:300]}")
+            return None
+
+        try:
+            data = response.json()
+        except ValueError:
+            print(f"Ответ обновления токена — не JSON: {response.text[:300]}")
+            return None
+
+        # Tokens(**data) падал с TypeError на лишних/недостающих ключах,
+        # а TypeError не ловится except RequestException.
+        access = data.get("access_token")
+        if not access:
+            print(f"В ответе обновления токена нет access_token: {data}")
+            return None
+        self.tokens = Tokens(
+            access_token=access,
+            refresh_token=data.get("refresh_token") or self.tokens.refresh_token,
+            token_type=data.get("token_type", "Bearer"),
+        )
+        return self.tokens
 
     # --- Создание транспортной компании ---
     def create_transport_companies(self, transport_companies: TransportCompaniesCreate) -> Optional[Dict]:
