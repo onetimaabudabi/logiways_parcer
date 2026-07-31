@@ -1,130 +1,482 @@
 [
   {
-    "name": "ТрансКонтейнер",
-    "contact_first_name": "Иван",
-    "contact_last_name": "Иванов",
-    "phone": "+74957881717",
-    "email": "trcont@trcont.com",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "РусТранс Групп",
-    "contact_first_name": "Петр",
-    "contact_last_name": "Петров",
-    "phone": "+79818124015",
-    "email": "sales@rustrans-gr.ru",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "Посейдон",
-    "contact_first_name": "Алексей",
-    "contact_last_name": "Хахалов",
-    "phone": "+79664454616",
-    "email": "hs@inter-log.ru",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "Рейл Траст",
-    "contact_first_name": "Алексей",
-    "contact_last_name": "Алексеев",
-    "phone": "+74232568568",
-    "email": "zapros@railtrust.ru",
-    "languages": ["ru", "en"]
-  },
-  {
     "name": "Ametist Line",
+    "parsers": [
+      "ametist_dropoff",
+      "ametist_line"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "https://ametistline.ru/",
+    "email": "sales@ametistline.ru",
+    "phone": "+79112993489",
+    "address": null,
     "contact_first_name": "Виктор",
     "contact_last_name": "Викторов",
-    "phone": "+78124164748",
-    "email": "sales@ametistline.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "Аметист",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address"
+    ]
   },
   {
-    "name": "FESCO",
-    "contact_first_name": "Екатерина",
-    "contact_last_name": "Екатеринова",
-    "phone": "+78002334499",
-    "email": "sales@fesco.com",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "TLC Baltic Line",
-    "contact_first_name": "Сергей",
-    "contact_last_name": "Сергеев",
-    "phone": "+78124016400",
-    "email": "import@t-lc.ru",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "Логопер",
-    "contact_first_name": "Мария",
-    "contact_last_name": "Маркова",
-    "phone": "+78005556060",
-    "email": "sale@logoper.ru",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "KHASAN",
-    "contact_first_name": "Дмитрий",
-    "contact_last_name": "Дмитриев",
-    "phone": "+79153938136",
-    "email": "sales4@khasanllc.pro",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "EuroSib",
-    "contact_first_name": "Ольга",
-    "contact_last_name": "Ольгина",
-    "phone": "+78123268111",
-    "email": "transport@eurosib.biz",
-    "languages": ["ru", "en"]
-  },
-  {
-    "name": "GrandLog",
-    "contact_first_name": "Сергей",
-    "contact_last_name": "Сергеев",
-    "phone": "+79241102424",
-    "email": "customs@grand-log.ru",
-    "languages": ["ru", "en"]
+    "name": "Global Logistic",
+    "parsers": [
+      "global_logistic"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": null,
+    "phone": null,
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "email",
+      "phone",
+      "address"
+    ]
   },
   {
     "name": "Mohill Rus",
+    "parsers": [
+      "mohill",
+      "mohill_new"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "roksana@mo-hill.com",
+    "phone": "+79816869492",
+    "address": null,
     "contact_first_name": "Roksana",
     "contact_last_name": "Muradian",
-    "phone": "+79816869492",
-    "email": "roksana@mo-hill.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "Mohill",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
   },
   {
-    "name": "ТК Логистика",
-    "contact_first_name": "Сергей",
-    "contact_last_name": "Сергеев",
-    "phone": "+79647221288",
-    "email": "clients@logistics-klt.com",
-    "languages": ["ru"]
-  },
-  {
-    "name": "Гарант Интермодал",
-    "contact_first_name": "Иваника",
-    "contact_last_name": "Иванова",
-    "phone": "+74232302020",
-    "email": "office@garant-intermodal.com",
-    "languages": ["ru", "en"]
+    "name": "NECO Line",
+    "parsers": [
+      "neco_line",
+      "ppk1_import"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": null,
+    "phone": null,
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "email",
+      "phone",
+      "address"
+    ]
   },
   {
     "name": "Panda Express Line",
+    "parsers": [
+      "panda"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "sales@pandexline.com",
+    "phone": "+78005005292",
+    "address": null,
     "contact_first_name": "Алекс",
     "contact_last_name": "Овся",
-    "phone": "+78005005292",
-    "email": "sales@pandexline.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
   },
   {
     "name": "Sunsko",
+    "parsers": [
+      "sansko"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "a.ovsyannikov@sunskorus.ru",
+    "phone": "+79296813747",
+    "address": null,
     "contact_first_name": "Алексей",
     "contact_last_name": "Овсянников",
-    "phone": "+79296813747",
-    "email": "a.ovsyannikov@sunskorus.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "TML RUS",
+    "parsers": [
+      "tml_income"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "kirill@onetml.com",
+    "phone": "+74232302004",
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "TML",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Гарант Интермодал",
+    "parsers": [
+      "garant_intermodal"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "office@garant-intermodal.com",
+    "phone": "+74232302020",
+    "address": null,
+    "contact_first_name": "Иваника",
+    "contact_last_name": "Иванова",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "ГрандЛог",
+    "parsers": [
+      "grandlog_terminal",
+      "grandlog_wagon"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "Customs@grand-log.ru",
+    "phone": "+79243332894",
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "ООО «ГрандЛог»",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Логопер",
+    "parsers": [
+      "logoper",
+      "logoper_new"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "sale@logoper.ru",
+    "phone": "+78005556060",
+    "address": null,
+    "contact_first_name": "Мария",
+    "contact_last_name": "Маркова",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Оператор",
+    "parsers": [
+      "sea_rail_operator"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": null,
+    "phone": null,
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "email",
+      "phone",
+      "address"
+    ]
+  },
+  {
+    "name": "Посейдон",
+    "parsers": [
+      "poseidon"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "hs@inter-log.ru",
+    "phone": "+79664454616",
+    "address": null,
+    "contact_first_name": "Алексей",
+    "contact_last_name": "Хахалов",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Рейл Траст",
+    "parsers": [
+      "railtrust"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "zapros@railtrust.ru",
+    "phone": "+74232568568",
+    "address": null,
+    "contact_first_name": "Алексей",
+    "contact_last_name": "Алексеев",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Рейл Траст Синокор",
+    "parsers": [
+      "railtrust_sinokor"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": null,
+    "phone": null,
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "email",
+      "phone",
+      "address"
+    ]
+  },
+  {
+    "name": "РусТранс Групп",
+    "parsers": [
+      "rustrans_group"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "https://rustrans-gr.ru",
+    "email": "sae@rustrans-gr.ru",
+    "phone": "+79816869492",
+    "address": null,
+    "contact_first_name": "Петр",
+    "contact_last_name": "Петров",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "RusTrans",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address"
+    ]
+  },
+  {
+    "name": "ТрансКонтейнер",
+    "parsers": [
+      "transcontainer_vietnam"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": "trcont@trcont.com",
+    "phone": "+74957881717",
+    "address": null,
+    "contact_first_name": "Иван",
+    "contact_last_name": "Иванов",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "ПАО «ТрансКонтейнер»",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "address"
+    ]
+  },
+  {
+    "name": "Транспорт Девелопмент Групп",
+    "parsers": [
+      "tdg"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": null,
+    "email": null,
+    "phone": "+73432877202",
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "Транспорт Девелопмент групп",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "website",
+      "email",
+      "address"
+    ]
+  },
+  {
+    "name": "Хасан",
+    "parsers": [
+      "khasan_docx"
+    ],
+    "inn": null,
+    "ogrn": null,
+    "website": "www.khasanllc.pro",
+    "email": null,
+    "phone": "+79153938136",
+    "address": null,
+    "contact_first_name": null,
+    "contact_last_name": null,
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "source_xlsx_name": "KHASAN",
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "email",
+      "address"
+    ]
   }
 ]
