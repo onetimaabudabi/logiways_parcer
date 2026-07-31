@@ -2226,9 +2226,13 @@ def build_segments_from_excel(df, client, company_id_dict=None):
         if container_ownership is not None:
             container_ownership = ContainerOwnership(container_ownership).value
 
-        port_service_term = get_value(row.get("port_service_term", None), None)
-        if port_service_term is not None:
-            port_service_term = PortServiceTermType(port_service_term).value
+        port_service_term_raw = get_value(row.get("port_service_term", None), None)
+        if port_service_term_raw is not None:
+            try:
+                port_service_term = PortServiceTermType(port_service_term_raw).value
+            except ValueError:
+                print(f"  [SKIP] Неизвестный port_service_term '{port_service_term_raw}' — пропускаем")
+                port_service_term = None
 
         weight_band = build_weight_band(row)
         if weight_band is None:
