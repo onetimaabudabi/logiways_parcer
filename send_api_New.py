@@ -112,6 +112,31 @@ class TransportType(str, Enum):
     SEA = "sea"
     AUTO = "auto"
 
+# Синонимы, которые пишут парсеры, но которых нет в TransportType.
+# "truck" — это тот же автотранспорт, что и "auto": строки НЕ выбрасываем,
+# иначе молча потеряем реальные автоперевозки (global_logistic, tml_income).
+TRANSPORT_TYPE_ALIASES = {
+    "truck": TransportType.AUTO.value,
+    "автo": TransportType.AUTO.value,
+}
+
+# Значения, которые перевозкой не являются и сегментом стать не могут.
+# "service" — это сбор (drop off) из ametist_dropoff и railtrust_sinokor.
+NON_TRANSPORT_TYPES = {"service", "dropoff"}
+
+
+def normalize_transport_type(value) -> Optional[str]:
+    """Значение из Excel -> допустимое значение TransportType или None.
+
+    None означает «строка не является транспортным сегментом, пропустить».
+    """
+    text = str(value or "").strip().lower()
+    if not text or text in NON_TRANSPORT_TYPES:
+        return None
+    text = TRANSPORT_TYPE_ALIASES.get(text, text)
+    return text if text in {t.value for t in TransportType} else None
+
+
 class CountryCodeType(str, Enum):
     RU = "Россия"
     BY = "Белорусь"
@@ -220,7 +245,7 @@ LOGIN_PASSWORD_FIELD = "password"
 # то есть сервер ожидал ГОЛЫЙ токен. Если admin-эндпоинты начнут отдавать 401,
 # верните AUTH_HEADER_SCHEME = "".
 AUTH_HEADER_NAME = "Authorization"
-AUTH_HEADER_SCHEME = "Bearer"
+AUTH_HEADER_SCHEME = ""
 
 LOGIWAYS_USERNAME = os.getenv("LOGIWAYS_USERNAME", "LWJOD24699")
 LOGIWAYS_PASSWORD = os.getenv("LOGIWAYS_PASSWORD", "268087")
@@ -1964,7 +1989,8 @@ def build_segments_from_excel_OLD(df, client, company_id):
             end_location_id=end_loc_id,
             border_location_id=None,
             customs_location_id=None,
-            transport_type=TransportType(row["transport_type"]),
+            transport_type=TransportType(normalize_transport_type(row["transport_type"])
+                                          or TransportType.AUTO.value),
             conditions=row.get('conditions', None),
             segment_key=segment_key
         )
@@ -2019,6 +2045,19 @@ def build_segments_from_excel(df, client, company_id_dict=None):
     if company_id_dict is None:
         company_id_dict = {}
     location_cache = {}
+
+    # Строки, которые не являются транспортными сегментами, отсеиваем ДО цикла:
+    # иначе для них успеют создаться локации, а сегмент всё равно не построится.
+    if "transport_type" in df.columns:
+        _normalized = df["transport_type"].map(normalize_transport_type)
+        _bad = df[_normalized.isna()]
+        if len(_bad):
+            print(f"  [SKIP] Строк с неподдерживаемым transport_type: {len(_bad)}")
+            for _value, _count in _bad["transport_type"].value_counts(dropna=False).items():
+                print(f"         {_value!r}: {_count}")
+        df = df[_normalized.notna()].copy()
+        # «truck» приводим к «auto», чтобы дальше работал TransportType(...)
+        df["transport_type"] = _normalized[_normalized.notna()]
 
     # Статистика
     rows_total = len(df)
@@ -2138,7 +2177,12 @@ def build_segments_from_excel(df, client, company_id_dict=None):
                 stopovers_loc_id = location_cache[cache_key(stopovers_loc, stopovers_loc_type)]
 
         # --- SEGMENT KEY (simplified) ---
-        transport_type_value = TransportType(row["transport_type"]).value
+        transport_type_value = normalize_transport_type(row["transport_type"])
+        if transport_type_value is None:
+            print(f"  [SKIP] Строка {index}: неподдерживаемый transport_type "
+                  f"{row['transport_type']!r}")
+            rows_skipped += 1
+            continue
 
         duration_min_days = get_value(row.get("duration_min_days", None), None)
         duration_max_days = get_value(row.get("duration_max_days", None), None)
