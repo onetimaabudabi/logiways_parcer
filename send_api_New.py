@@ -1,4 +1,5 @@
 import requests
+import re
 from typing import Optional, Dict, List, Any
 from dataclasses import dataclass, asdict, field
 from enum import Enum
@@ -218,7 +219,7 @@ LOGIN_PASSWORD_FIELD = "password"
 # то есть сервер ожидал ГОЛЫЙ токен. Если admin-эндпоинты начнут отдавать 401,
 # верните AUTH_HEADER_SCHEME = "".
 AUTH_HEADER_NAME = "Authorization"
-AUTH_HEADER_SCHEME = ""
+AUTH_HEADER_SCHEME = "Bearer"
 
 LOGIWAYS_USERNAME = os.getenv("LOGIWAYS_USERNAME", "LWJOD24699")
 LOGIWAYS_PASSWORD = os.getenv("LOGIWAYS_PASSWORD", "268087")
@@ -232,6 +233,27 @@ class Tokens:
     token_type: str = "Bearer"
 
 # --- Новые структуры для транспортных компаний ---
+DEFAULT_PHONE = "+71234567890"
+DEFAULT_EMAIL = "test@example.com"
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$")
+
+
+def normalize_phone(value, default: str = DEFAULT_PHONE) -> str:
+    """Приводит телефон к +7XXXXXXXXXX; на пустом/битом возвращает default."""
+    digits = re.sub(r"\D", "", str(value or ""))
+    if len(digits) == 11 and digits[0] == "8":
+        digits = "7" + digits[1:]
+    elif len(digits) == 10 and digits[0] in "3489":
+        digits = "7" + digits
+    return "+" + digits if 10 <= len(digits) <= 15 else default
+
+
+def normalize_email(value, default: str = DEFAULT_EMAIL) -> str:
+    """Возвращает валидный email либо default."""
+    text = str(value or "").strip()
+    return text if _EMAIL_RE.match(text) else default
+
+
 ORGANIZATION_TYPE_LEGAL_ENTITY = "legal_entity"
 ORGANIZATION_TYPE_INDIVIDUAL_ENTREPRENEUR = "individual_entrepreneur"
 ORGANIZATION_TYPES = (ORGANIZATION_TYPE_LEGAL_ENTITY,
@@ -247,15 +269,21 @@ COMPANIES_FILES = ("companies_all.json", "companies.json")
 class TransportCompaniesCreate:
     """Тело запроса POST /admin/transport-companies.
 
-    Порядок полей отличается от спецификации: в dataclass поле без значения
-    по умолчанию не может идти после поля со значением, поэтому обязательные
-    contact_* подняты выше inn. На JSON это не влияет.
+    Состав полей взят из ответа сервера 422: обязательны name, phone, email.
+    Присланная ранее спецификация с полем "title" сервером не подтвердилась —
+    на title он отвечал «Field required» для name/phone/email.
+
+    Порядок полей отличается от документации: в dataclass поле без значения
+    по умолчанию не может идти после поля со значением, поэтому все
+    обязательные подняты вверх. На JSON порядок не влияет.
     """
-    title: str
+    name: str
+    phone: str
+    email: str
     contact_first_name: str
     contact_last_name: str
-    inn: Optional[str] = None
     contact_middle_name: Optional[str] = None
+    inn: Optional[str] = None
     organization_type: str = ORGANIZATION_TYPE_LEGAL_ENTITY
 
 # --- Cтруктура для локаций---
@@ -379,14 +407,13 @@ class LogiwaysClient:
         self.base_url = base_url.rstrip("/")
         # Сессия создаётся первой: настройки ниже пишутся уже в неё.
         self.session = requests.Session()
-        self.session.verify = False          # тестовый стенд без валидного SSL
+        self.session.verify = False
         requests.packages.urllib3.disable_warnings()
 
         self.timeout = timeout
         self.tokens: Optional[Tokens] = None
         self._credentials: Optional[tuple] = None
-        # Защита от рекурсии в _handle_401: пока идёт повторная попытка после
-        # 401, вложенные 401 не запускают новый цикл обновления токена.
+        # Защита от рекурсии в _handle_401.
         self._auth_retry_active = False
 
     def _headers(self) -> Dict[str, str]:
@@ -404,19 +431,11 @@ class LogiwaysClient:
     def _handle_401(self, func, *args, **kwargs):
         """Обработка 401: ровно ОДНА попытка переполучить токен и повторить вызов.
 
-        Раньше здесь была бесконечная рекурсия: refresh_token() мог успешно
-        обновлять токен, но сервер всё равно отвечал 401 (например, из-за
-        неверного формата заголовка Authorization). Тогда func() вызывался
-        снова, снова получал 401, снова попадал сюда — и так до RecursionError.
-
-        Защита двухуровневая:
-          * kwargs["_retry"] — явный флаг, если вызывающий метод его передаёт;
-          * self._auth_retry_active — флаг на экземпляре, который взводится на
-            время повторного вызова. Любой вложенный 401 внутри этого вызова
-            сразу получает None и не запускает новый цикл.
+        Без этого ограничения возникала бесконечная рекурсия: refresh_token()
+        успешно обновлял токен, но сервер всё равно отдавал 401, func()
+        вызывался снова — и так до RecursionError.
         """
         retry_allowed = kwargs.pop("_retry", True)
-
         if not retry_allowed or self._auth_retry_active:
             print("Повторная авторизация уже выполнялась — прекращаем "
                   f"(эндпоинт {getattr(func, '__name__', func)!r} всё ещё отдаёт 401). "
@@ -427,8 +446,7 @@ class LogiwaysClient:
         if not renewed:
             creds = self._credentials
             if not creds:
-                print("Не удалось обновить токен: учётные данные для "
-                      "повторного логина не сохранены.")
+                print("Не удалось обновить токен: учётные данные не сохранены.")
                 return None
             print("refresh_token не сработал — пробуем повторный логин.")
             renewed = self.login(*creds)
@@ -522,15 +540,9 @@ class LogiwaysClient:
             return None
 
     def refresh_token(self) -> Optional[Tokens]:
-        """Обновляет access_token. Одна попытка, без повторов.
-
-        Повторы здесь запрещены сознательно: этот метод вызывается из
-        _handle_401, и любой цикл внутри него складывался бы с внешним.
-        """
         if not self.tokens or not self.tokens.refresh_token:
             print("Нет refresh_token для обновления")
             return None
-
         url = f"{self.base_url}/api/users/refresh-token"
         payload = {"refresh_token": self.tokens.refresh_token}
         try:
@@ -540,33 +552,20 @@ class LogiwaysClient:
             return None
 
         if response.status_code in (401, 403):
-            print(f"refresh_token отклонён ({response.status_code}). "
-                  f"Ответ сервера: {response.text[:300]}")
-            self.tokens = None          # токен мёртв, дальше нужен полный логин
+            print(f"refresh_token отклонён ({response.status_code}): {response.text[:300]}")
+            self.tokens = None
             return None
         if response.status_code == 404:
-            print("Эндпоинт /api/users/refresh-token отсутствует (404) — "
-                  "обновление токена недоступно, потребуется повторный логин.")
+            print("Эндпоинт /api/users/refresh-token отсутствует (404).")
             return None
-        if response.status_code == 422:
-            print(f"Обновление токена отклонено (422). "
-                  f"Ответ сервера: {response.text[:300]}")
-            return None
-
         try:
             response.raise_for_status()
-        except requests.exceptions.RequestException as e:
+            data = response.json()
+        except (requests.exceptions.RequestException, ValueError) as e:
             print(f"Ошибка обновления токена: {e}; ответ: {response.text[:300]}")
             return None
 
-        try:
-            data = response.json()
-        except ValueError:
-            print(f"Ответ обновления токена — не JSON: {response.text[:300]}")
-            return None
-
-        # Tokens(**data) падал с TypeError на лишних/недостающих ключах,
-        # а TypeError не ловится except RequestException.
+        # Tokens(**data) падал с TypeError на лишних ключах — собираем вручную.
         access = data.get("access_token")
         if not access:
             print(f"В ответе обновления токена нет access_token: {data}")
@@ -587,6 +586,11 @@ class LogiwaysClient:
         if transport_companies.organization_type not in ORGANIZATION_TYPES:
             print(f"Недопустимый organization_type: {transport_companies.organization_type!r}")
             return None
+        # Обязательные по схеме сервера поля не должны быть пустыми
+        for field in ("name", "phone", "email", "contact_first_name", "contact_last_name"):
+            if not str(getattr(transport_companies, field) or "").strip():
+                print(f"Организация не создана: пустое обязательное поле {field!r}")
+                return None
 
         url = f"{self.base_url}/admin/transport-companies"
         # None-поля не отправляем: схема ждёт string, а null даёт 422
@@ -611,12 +615,12 @@ class LogiwaysClient:
             if response.status_code == 401:
                 return self._handle_401(self.create_transport_companies, transport_companies)
             if response.status_code == 409:
-                print(f"Организация {payload.get('title')!r} уже существует (409)")
-                existing = self.get_transport_company_by_name(transport_companies.title)
-                return {"id": existing, "title": transport_companies.title,
+                print(f"Организация {payload.get('name')!r} уже существует (409)")
+                existing = self.get_transport_company_by_name(transport_companies.name)
+                return {"id": existing, "name": transport_companies.name,
                         "already_exists": True} if existing else None
             if response.status_code == 422:
-                print(f"Организация {payload.get('title')!r} отклонена (422). Отправлено: {payload}")
+                print(f"Организация {payload.get('name')!r} отклонена (422). Отправлено: {payload}")
                 print(f"Ответ сервера: {response.text[:500]}")
                 return None
             if response.status_code >= 500 and attempt < MAX_RETRIES:
@@ -634,7 +638,7 @@ class LogiwaysClient:
                 return None
             return response.json()
 
-        print(f"Не удалось создать организацию {payload.get('title')!r}: {last_error}")
+        print(f"Не удалось создать организацию {payload.get('name')!r}: {last_error}")
         return None
 
     # --- Создание локации ---
@@ -2560,17 +2564,19 @@ if __name__ == "__main__":
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
         if trans_company_id is None:
             print("\n=== Создание новой организации ===")
-            _title = trans_company.get("name") or trans_company.get("catalog_name")
-            if not _title:
+            _name = trans_company.get("name") or trans_company.get("catalog_name")
+            if not _name:
                 print("Пропуск записи без названия:", trans_company)
                 continue
             _inn = trans_company.get("inn")
             new_org = TransportCompaniesCreate(
-                title=_title,
+                name=_name,
+                phone=normalize_phone(trans_company.get("phone")),
+                email=normalize_email(trans_company.get("email")),
+                contact_first_name=(trans_company.get("contact_first_name") or "").strip() or "Тест",
+                contact_last_name=(trans_company.get("contact_last_name") or "").strip() or "Тестов",
+                contact_middle_name=(trans_company.get("contact_middle_name") or "").strip() or None,
                 inn=str(_inn) if _inn else None,
-                contact_first_name=trans_company.get("contact_first_name") or "Тест",
-                contact_last_name=trans_company.get("contact_last_name") or "Тестов",
-                contact_middle_name=trans_company.get("contact_middle_name") or None,
                 organization_type=trans_company.get(
                     "organization_type", ORGANIZATION_TYPE_LEGAL_ENTITY
                 ),
@@ -2580,7 +2586,7 @@ if __name__ == "__main__":
                 trans_company_id = created_org.get('id')
                 print(f"Организация создана. ID: {trans_company_id}")
             else:
-                print("Не удалось создать организацию.", _title)
+                print("Не удалось создать организацию.", _name)
         companiess_ids[trans_company.get("name") or trans_company.get("catalog_name", "")] = trans_company_id
 
     
