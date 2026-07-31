@@ -3,6 +3,8 @@ import os
 
 from parsers.utils import segments_to_df
 
+
+import parsers.sansko_new as sansko_new_parser
 import parsers.amethyst as amethyst_parser
 import parsers.eurosib as eurosib_parse
 import parsers.grandlog as grandlog_parser
@@ -203,6 +205,7 @@ def parse_all(paths=None):
     #segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 30.04.2026.pdf")
     #segments += panda_parser.parse("data/Панда.pdf")
     segments += mohill_parse.parse("data/Notice MOHILL Line Far East JUNE (25.05).xlsx")
+    segments += sansko_new_parser.parse("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf")
     # Санско
     #segments += sansko_parser.parse("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf")
 

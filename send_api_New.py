@@ -561,7 +561,7 @@ class LogiwaysClient:
             "middle_name": middle_name
         }
         try:
-            response = self.session.post(url, json=payload)
+            response = self.session.post(url, json=payload, timeout=self.timeout)
             response.raise_for_status()
             data = response.json()
             self.tokens = Tokens(**data)
@@ -574,7 +574,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/api/users/request-sms"
         payload = {"phone": phone, "test": True}
         try:
-            response = self.session.post(url, json=payload)
+            response = self.session.post(url, json=payload, timeout=self.timeout)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -585,7 +585,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/api/users/verify-sms"
         payload = {"phone_number": phone_number, "code": code}
         try:
-            response = self.session.post(url, json=payload)
+            response = self.session.post(url, json=payload, timeout=self.timeout)
             response.raise_for_status()
             data = response.json()
             self.tokens = Tokens(**data)
@@ -734,7 +734,7 @@ class LogiwaysClient:
             for k, v in payload.items()
         }
         try:
-            response = self.session.post(url, json=payload, headers=self._headers())
+            response = self.session.post(url, json=payload, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.create_locations, location)
             response.raise_for_status()
@@ -839,7 +839,7 @@ class LogiwaysClient:
         company_search_clean = company_search.strip()
         url = f"{self.base_url}/admin/transport-companies?search={company_search_clean}"
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_transport_company_by_name, company_search)
             if response.status_code == 404:
@@ -886,7 +886,7 @@ class LogiwaysClient:
             return None
         url = f"{self.base_url}/admin/transport-companies/{company_id}"
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_companies, company_id)
             if response.status_code == 404:
@@ -928,7 +928,7 @@ class LogiwaysClient:
         # Поиск по имени+тип+страна (не по стране одной!)
         url = f"{self.base_url}/admin/locations?search={location_name}&limit=500"
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.find_location_id_by_name, location_name, location_type, country_code, parent_location_id)
             response.raise_for_status()
@@ -993,7 +993,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/admin/route-segments?transport_company_id={transport_company_id}"
 
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_route_segments, transport_company_id)
             response.raise_for_status()
@@ -1003,7 +1003,7 @@ class LogiwaysClient:
             print(f"Ошибка получения сегментов: {e}")
             return None
 
-    def ensure_route_segment_id(self, transport_company_id: str, local_segment_key: str, known_segment_id: str = None, retries: int = 5, sleep_seconds: float = 1.0) -> Optional[str]:
+    def ensure_route_segment_id(self, transport_company_id: str, local_segment_key: str, known_segment_id: str = None, retries: int = 2, sleep_seconds: float = 1.0) -> Optional[str]:
         """
         Проверяет существование сегмента и возвращает актуальный ID.
 
@@ -1014,6 +1014,7 @@ class LogiwaysClient:
             return None
 
         for attempt in range(retries):
+            print(f"[ENSURE] Попытка {attempt + 1}/{retries} для сегмента {local_segment_key[:8]}... ТК {transport_company_id[:8]}...")
             segments = self.get_route_segments(transport_company_id)
             if segments is None:
                 print(f"Попытка {attempt + 1}/{retries}: не удалось получить сегменты для компании {transport_company_id}")
@@ -1061,7 +1062,7 @@ class LogiwaysClient:
             "stopover_kind": "transshipment"
         }
         try:
-            response = self.session.put(url, json=payload, headers=headers)
+            response = self.session.put(url, json=payload, headers=headers, timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.create_stopovers, payload)
             if response.status_code == 403:
@@ -1085,7 +1086,7 @@ class LogiwaysClient:
         payload = [asdict(d) for d in departures]
         #payload = [asdict(departures)]
         try:
-            response = self.session.put(url, json=payload, headers=headers)
+            response = self.session.put(url, json=payload, headers=headers, timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.create_departures, segment_id, departures)
             if response.status_code == 403:
@@ -1117,7 +1118,7 @@ class LogiwaysClient:
         print(f"[DEBUG] Отправка {num_segments} сегментов для ТК: {company_id}")
 
         try:
-            response = self.session.post(url, json=segments_bulk, headers=headers)
+            response = self.session.post(url, json=segments_bulk, headers=headers, timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.replace_route_segments, segments_bulk)
             if response.status_code == 403:
@@ -1187,7 +1188,7 @@ class LogiwaysClient:
                 ]
 
         try:
-            response = self.session.post(url, json=payload, headers=self._headers())
+            response = self.session.post(url, json=payload, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.create_tariffs, segment_id, tariffs)
             response.raise_for_status()
@@ -1201,7 +1202,7 @@ class LogiwaysClient:
     def get_segment_tariffs(self, segment_id: str):
         url = f"{self.base_url}/admin/route-segments/{segment_id}/tariffs"
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_segment_tariffs, segment_id)
             response.raise_for_status()
@@ -1217,7 +1218,8 @@ class LogiwaysClient:
             response = self.session.patch(
                 url,
                 json=payload,
-                headers=self._headers()
+                headers=self._headers(),
+                timeout=self.timeout,
             )
             if response.status_code == 401:
                 return self._handle_401(self.update_tariff, tariff)
@@ -1235,7 +1237,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/admin/tariffs/{tariff_id}/dropoff-locations"
         headers = self._headers()
         try:
-            response = self.session.put(url, json=dropoffs, headers=headers)
+            response = self.session.put(url, json=dropoffs, headers=headers, timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.update_tariff_dropoff_locations, tariff_id, dropoffs)
             if response.status_code == 404:
@@ -1288,7 +1290,8 @@ class LogiwaysClient:
             response = self.session.put(
                 url,
                 json=payload,
-                headers=self._headers()
+                headers=self._headers(),
+                timeout=self.timeout,
             )
             if response.status_code == 401:
                 return self._handle_401(self.update_route_segment_coordinates, route_segment_id, coordinates)
@@ -1319,7 +1322,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/admin/route-segments/{route_segment_id}/coordinates"
         
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_route_segment_coordinates, route_segment_id)
             if response.status_code == 404:
@@ -1462,7 +1465,7 @@ class LogiwaysClient:
             return None
         url = f"{self.base_url}/admin/locations/{location_id}"
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_location_by_id, location_id)
             if response.status_code == 404:
@@ -1486,7 +1489,7 @@ class LogiwaysClient:
         url = f"{self.base_url}/admin/locations?limit={limit}"
         all_items = []
         try:
-            response = self.session.get(url, headers=self._headers())
+            response = self.session.get(url, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.get_all_locations, limit)
             response.raise_for_status()
@@ -1550,7 +1553,7 @@ class LogiwaysClient:
                 payload[field] = existing[field]
 
         try:
-            response = self.session.put(url, json=payload, headers=self._headers())
+            response = self.session.put(url, json=payload, headers=self._headers(), timeout=self.timeout)
             if response.status_code == 401:
                 return self._handle_401(self.update_location_coordinates, location_id, latitude, longitude)
             response.raise_for_status()
@@ -2455,6 +2458,7 @@ def upload_segments(client, segments):
         if not company_id:
             continue
 
+        print(f"[VERIFY] Проверка сегмента {segment_key[:8]}... для ТК {company_id[:8]}...")
         resolved_id = client.ensure_route_segment_id(company_id, segment_key, known_segment_id=known_segment_id)
         if resolved_id is None:
             print(f"[ERR] Сегмент {segment_key[:8]} не найден после проверки на бэкенде. Он будет пропущен.")
