@@ -2226,6 +2226,7 @@ def build_segments_from_excel(df, client, company_id_dict=None):
         if container_ownership is not None:
             container_ownership = ContainerOwnership(container_ownership).value
 
+        port_service_term = None
         port_service_term_raw = get_value(row.get("port_service_term", None), None)
         if port_service_term_raw is not None:
             try:
