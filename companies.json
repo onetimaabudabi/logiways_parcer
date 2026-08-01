@@ -5,28 +5,14 @@
     "contact_last_name": "Тестов",
     "phone": "+71234567890",
     "email": "sale@logoper.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://logoper.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "logoper_new"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 753,
+    "parsers": ["logoper_new", "logoper"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "phone: тестовое значение"]
   },
   {
     "name": "NECO Line",
@@ -34,28 +20,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78124673780",
     "email": "sales@necoline.net",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://necoline.net/en/home/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "neco_line",
-      "ppk1_import"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 717,
+    "parsers": ["neco_line", "ppk1_import"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "TML RUS",
@@ -63,54 +35,14 @@
     "contact_last_name": "LI",
     "phone": "+74232302004",
     "email": "kirill@onetml.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "onetml.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "tml_income"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 685,
+    "parsers": ["tml_income"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
-  },
-  {
-    "name": "Логопер",
-    "contact_first_name": "Тест",
-    "contact_last_name": "Тестов",
-    "phone": "+71234567890",
-    "email": "sale@logoper.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
-    "website": "https://logoper.ru/",
-    "inn": null,
-    "ogrn": null,
-    "address": null,
-    "parsers": [
-      "logoper"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 570,
-    "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Panda Express Line",
@@ -118,27 +50,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78005005292",
     "email": "sales@pandexline.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.pandexline.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "panda"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 489,
+    "parsers": ["panda"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "РусТранс Групп",
@@ -146,28 +65,14 @@
     "contact_last_name": "Тестов",
     "phone": "+79818124015",
     "email": "sales@rustrans-gr.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "rustrans-gr.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "rustrans",
-      "rustrans_group"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 480,
+    "parsers": ["rustrans", "rustrans_group"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Рейл Траст",
@@ -175,27 +80,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74232568568",
     "email": "zapros@railtrust.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://rail-trust.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "railtrust"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 384,
+    "parsers": ["railtrust"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Transforever International Forwarding",
@@ -203,26 +95,14 @@
     "contact_last_name": "Liu",
     "phone": "+008618230551218",
     "email": "bdd06@htj-freight.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "transforever_international_forwarding"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 270,
+    "parsers": ["transforever_international_forwarding"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website"
-    ]
+    "missing": ["inn", "ogrn", "address", "website"]
   },
   {
     "name": "FESCO",
@@ -230,27 +110,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78002334499",
     "email": "sales@fesco.com.",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.fesco.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "fesco"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 245,
+    "parsers": ["fesco"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Оператор",
@@ -258,30 +125,14 @@
     "contact_last_name": "Тестов",
     "phone": "+71234567890",
     "email": "test@example.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "sea_rail_operator"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 221,
+    "parsers": ["sea_rail_operator"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение",
-      "email: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "phone: тестовое значение", "email: тестовое значение"]
   },
   {
     "name": "Гарант Интермодал",
@@ -289,27 +140,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74232302020",
     "email": "office@garant-intermodal.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "garant-intermodal.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "garant_intermodal"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 201,
+    "parsers": ["garant_intermodal"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Транспорт Девелопмент Групп",
@@ -317,27 +155,14 @@
     "contact_last_name": "Тестов",
     "phone": "+79222212201",
     "email": "LupandinOV@trdg.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://trdg.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "tdg"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 172,
+    "parsers": ["tdg"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Ametist Line",
@@ -345,25 +170,14 @@
     "contact_last_name": "Roman",
     "phone": "+79112993489",
     "email": "sales@ametistline.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://ametistline.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "ametist_line"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 170,
+    "parsers": ["ametist_line"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Рейл Траст Синокор",
@@ -371,27 +185,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74232568568",
     "email": "zapros@railtrust.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://rail-trust.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "railtrust_sinokor"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 169,
+    "parsers": ["railtrust_sinokor"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "NingBo Y-STAR Logistics",
@@ -399,28 +200,14 @@
     "contact_last_name": "Тестов",
     "phone": "+86057428890282",
     "email": "Emily@y-starlog.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "ningbo_ystar_logistics"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 155,
+    "parsers": ["ningbo_ystar_logistics"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "HS CHINA LIMITED",
@@ -428,28 +215,14 @@
     "contact_last_name": "Тестов",
     "phone": "+17502090237",
     "email": "3352213563@qq.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "hs_china_limited"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 136,
+    "parsers": ["hs_china_limited"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Мармед - Контейнерное Агенство",
@@ -457,26 +230,14 @@
     "contact_last_name": "Varenitsin",
     "phone": "+79263314620",
     "email": "rus.aleksandr.varenitcin@marmed-container.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "marmedcontainer"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 128,
+    "parsers": ["marmedcontainer"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website"
-    ]
+    "missing": ["inn", "ogrn", "address", "website"]
   },
   {
     "name": "Sunsko",
@@ -484,25 +245,14 @@
     "contact_last_name": "Алексей",
     "phone": "+79167674479",
     "email": "a.ovsyannikov@sunskorus.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "sunskorus.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "sansko"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 114,
+    "parsers": ["sansko"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Mohill Rus",
@@ -510,26 +260,14 @@
     "contact_last_name": "Muradian",
     "phone": "+79816869492",
     "email": "roksana@mo-hill.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "mo-hill.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "mohill",
-      "mohill_old_copy"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 109,
+    "parsers": ["mohill", "mohill_old_copy"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "ГрандЛог",
@@ -537,28 +275,14 @@
     "contact_last_name": "Тестов",
     "phone": "+79241102424",
     "email": "customs@grand-log.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "grand-log.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "grandlog_terminal",
-      "grandlog_wagon"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 96,
+    "parsers": ["grandlog_terminal", "grandlog_wagon"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Неизвестная_компания_4",
@@ -566,29 +290,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8613602650115",
     "email": "test@example.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "unknown_company4"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 84,
+    "parsers": ["unknown_company4"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "email: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "email: тестовое значение"]
   },
   {
     "name": "MOHILL Line",
@@ -596,25 +305,14 @@
     "contact_last_name": "Muradian",
     "phone": "+79816869492",
     "email": "roksana@mo-hill.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "mo-hill.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "mohill_new"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 61,
+    "parsers": ["mohill_new"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Посейдон",
@@ -622,27 +320,14 @@
     "contact_last_name": "Тестов",
     "phone": "+79664454616",
     "email": "hs@inter-log.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://inter-log.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "poseidon"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 48,
+    "parsers": ["poseidon"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "LCL",
@@ -650,29 +335,14 @@
     "contact_last_name": "Тестов",
     "phone": "+71234567890",
     "email": "yiona99@mail.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "lcl"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 40,
+    "parsers": ["lcl"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "phone: тестовое значение"]
   },
   {
     "name": "Amethyst",
@@ -680,25 +350,14 @@
     "contact_last_name": "Roman",
     "phone": "+79112993489",
     "email": "sales@ametistline.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://ametistline.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "amethyst"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 39,
+    "parsers": ["amethyst"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Hesion Global Logistics",
@@ -706,26 +365,14 @@
     "contact_last_name": "Lee",
     "phone": "+075582208084",
     "email": "manager10@hesion-globallogistics.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "hesion_global_logistics"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 39,
+    "parsers": ["hesion_global_logistics"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website"
-    ]
+    "missing": ["inn", "ogrn", "address", "website"]
   },
   {
     "name": "Shenzhen Wotu International",
@@ -733,26 +380,14 @@
     "contact_last_name": "Chen",
     "phone": "+8613613009467",
     "email": "wotu.webb@foxmail.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "shenzhen_wotu_international"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 36,
+    "parsers": ["shenzhen_wotu_international"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website"
-    ]
+    "missing": ["inn", "ogrn", "address", "website"]
   },
   {
     "name": "Global Logistic",
@@ -760,28 +395,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8618320413397",
     "email": "nicholas@mw-bd2.ltd",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "global_logistic"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 33,
+    "parsers": ["global_logistic"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Хасан",
@@ -789,27 +410,14 @@
     "contact_last_name": "Тестов",
     "phone": "+79153938136",
     "email": "sales4@khasanllc.pro",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://khasanllc.pro/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "khasan_docx"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 29,
+    "parsers": ["khasan_docx"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Spacelog",
@@ -817,27 +425,14 @@
     "contact_last_name": "Тестов",
     "phone": "+075582336692",
     "email": "sales030@spacelog.cn",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "http://en.spacelog.cn/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "spacelog"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 27,
+    "parsers": ["spacelog"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Torgmoll",
@@ -845,27 +440,14 @@
     "contact_last_name": "Kadzaeva",
     "phone": "+71234567890",
     "email": "operator.imp@torgmoll.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "torgmoll"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 26,
+    "parsers": ["torgmoll"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "phone: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "phone: тестовое значение"]
   },
   {
     "name": "ТрансКонтейнер",
@@ -873,28 +455,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74957881717",
     "email": "salesdepartment@trcont.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.trcont.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "transcontainer",
-      "transcontainer_vietnam"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 20,
+    "parsers": ["transcontainer", "transcontainer_vietnam"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Shaanxi Coal International Logistics",
@@ -902,27 +470,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8617366759150",
     "email": "Kelly@meihua-lts.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.sxmhnykj.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "shaanxi_coal_international_logistics"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 19,
+    "parsers": ["shaanxi_coal_international_logistics"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Shenzhen Space Logistics",
@@ -930,26 +485,14 @@
     "contact_last_name": "Тестов",
     "phone": "+73265369793",
     "email": "3265369793@qq.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": true,
-    "rows_in_excel": 18,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Неизвестная_компания_3",
@@ -957,28 +500,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8613750010412",
     "email": "young_young_yao_yao@vk.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "unknown_company3"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 16,
+    "parsers": ["unknown_company3"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "GW CHINA LIMITED",
@@ -986,26 +515,14 @@
     "contact_last_name": "Тестов",
     "phone": "+73265369793",
     "email": "3265369793@qq.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": true,
-    "rows_in_excel": 15,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "Shenzhen Eagleway Supply Chain Management",
@@ -1013,27 +530,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8613631391906",
     "email": "emile@eagleway-logistic.group",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "eagleway-logistic.group",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "shenzhen_eagleway_supply_chain_management"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 15,
+    "parsers": ["shenzhen_eagleway_supply_chain_management"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "TML",
@@ -1041,25 +545,14 @@
     "contact_last_name": "LI",
     "phone": "+74232302004",
     "email": "kirill@onetml.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "onetml.com",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "tml"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 12,
+    "parsers": ["tml"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "UnknownCompany1",
@@ -1067,30 +560,14 @@
     "contact_last_name": "Тестов",
     "phone": "+71234567890",
     "email": "test@example.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "unknown_company1"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 11,
+    "parsers": ["unknown_company1"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение",
-      "email: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "phone: тестовое значение", "email: тестовое значение"]
   },
   {
     "name": "AMETIST",
@@ -1098,25 +575,14 @@
     "contact_last_name": "Roman",
     "phone": "+79112993489",
     "email": "sales@ametistline.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://ametistline.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "ametist_dropoff"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 4,
+    "parsers": ["ametist_dropoff"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address"
-    ]
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "ТК Логистика",
@@ -1124,30 +590,14 @@
     "contact_last_name": "Тестов",
     "phone": "+71234567890",
     "email": "test@example.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": null,
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "tk_logistika"
-    ],
-    "in_excel": true,
-    "rows_in_excel": 4,
+    "parsers": ["tk_logistika"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "website",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение",
-      "phone: тестовое значение",
-      "email: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "website", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение", "phone: тестовое значение", "email: тестовое значение"]
   },
   {
     "name": "Eagleway logistic",
@@ -1155,25 +605,14 @@
     "contact_last_name": "Тестов",
     "phone": "+8613631391906",
     "email": "emile@eagleway-logistic.group",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "eagleway-logistic.group",
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": false,
-    "rows_in_excel": 0,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "EuroSib",
@@ -1181,27 +620,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78123268111",
     "email": "transport@eurosib.biz",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "eurosib.biz",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "eurosib"
-    ],
-    "in_excel": false,
-    "rows_in_excel": 0,
+    "parsers": ["eurosib"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "TLC Baltic Line",
@@ -1209,28 +635,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78124016400",
     "email": "import@t-lc.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.t-lc.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
-    "parsers": [
-      "tcl_asia_line",
-      "tcl_baltic_line"
-    ],
-    "in_excel": false,
-    "rows_in_excel": 0,
+    "parsers": ["tcl_asia_line", "tcl_baltic_line"],
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "АТРАНС ГЛОБАЛ (Atrans Global)",
@@ -1238,25 +650,14 @@
     "contact_last_name": "Тестов",
     "phone": "+78003003700",
     "email": "zapros@atransdv.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.atransglobal.ru",
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": false,
-    "rows_in_excel": 0,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "ДВЛК",
@@ -1264,25 +665,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74232651945",
     "email": "info@dvlk.su",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "www.dvlk.su",
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": false,
-    "rows_in_excel": 0,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "ОАО «Владморрыбпорт»",
@@ -1290,25 +680,14 @@
     "contact_last_name": "Тестов",
     "phone": "+74232057171",
     "email": "client-manager@fishport.ru",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "https://www.vsct.info/index/company/about.html",
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": false,
-    "rows_in_excel": 0,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   },
   {
     "name": "ХАБ ШИППЕНГ",
@@ -1316,24 +695,13 @@
     "contact_last_name": "Тестов",
     "phone": "+74994554730",
     "email": "marketing@hub-shipping.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
+    "languages": ["ru", "en"],
     "website": "hub-shipping.com",
     "inn": null,
     "ogrn": null,
     "address": null,
     "parsers": [],
-    "in_excel": false,
-    "rows_in_excel": 0,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "contact_first_name: тестовое значение",
-      "contact_last_name: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address", "contact_first_name: тестовое значение", "contact_last_name: тестовое значение"]
   }
 ]

@@ -3,7 +3,7 @@ import os
 
 from parsers.utils import segments_to_df
 
-
+import parsers.atrans_global as atrans_global_parser
 import parsers.sansko_new as sansko_new_parser
 import parsers.amethyst as amethyst_parser
 import parsers.eurosib as eurosib_parse
@@ -211,70 +211,70 @@ def parse_all(paths=None):
 
     
     # Гарант Интермодал - 5 файлов
-    segments += garant_intermodal_parser.parse("data/01.04.-30.04.-Все-порты-жд-Москва (1).pdf")
-    segments += garant_intermodal_parser.parse("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf")
-    segments += garant_intermodal_parser.parse("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf")
-    segments += garant_intermodal_parser.parse("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf")
-    segments += garant_intermodal_parser.parse("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf")
-    '''
-    '''
-    #Готово
-    segments += poseidon_parser.parse(paths["Poseidon"])
-    segments += railtrust_parser.parse("data/Прайс Рейл Траст с 01.03.26.pdf")
-    segments += railtrust_parser.parse_skvoznoy("data/Прайс Рейл Траст сквозной с 10.03.2026.pdf")
-    segments += ametist_line_parser.parse("data/February 2026 Rates (2).pdf")
+    # segments += garant_intermodal_parser.parse("data/01.04.-30.04.-Все-порты-жд-Москва (1).pdf")
+    # segments += garant_intermodal_parser.parse("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf")
+    # segments += garant_intermodal_parser.parse("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf")
+    # segments += garant_intermodal_parser.parse("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf")
+    # segments += garant_intermodal_parser.parse("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf")
+    # '''
+    # '''
+    # #Готово
+    # segments += poseidon_parser.parse(paths["Poseidon"])
+    # segments += railtrust_parser.parse("data/Прайс Рейл Траст с 01.03.26.pdf")
+    # segments += railtrust_parser.parse_skvoznoy("data/Прайс Рейл Траст сквозной с 10.03.2026.pdf")
+    # segments += ametist_line_parser.parse("data/February 2026 Rates (2).pdf")
     
-    segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 11.03.2026 (1).pdf")
+    # segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 11.03.2026 (1).pdf")
     
-    #segments += global_logistic_parser.parse("data/Dear Baksanovaig.docx") # тут только truck
+    # #segments += global_logistic_parser.parse("data/Dear Baksanovaig.docx") # тут только truck
     
-    #Готово
-    segments += fesco_parser.parse(paths["Fesco"])
-    #segments += transcontainer_parse.parse(paths["TransContainer"])
-    segments += rustrans_parse.parse(paths["RusTrans"])
-    segments += eurosib_parse.parse()
-    segments += grandlog_parser.parse(paths["GrandLog"]) #май
-    segments += tcl_baltic_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf")
-    segments += tcl_asia_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2026 ASIA LINE   (2).pdf")
-    segments += khasan_parser.parse(paths["Khasan"])
-    segments += grandlog_parser.parse_GrandLog_offer(paths["GrandLog_sea"]) #май
-    segments += mohill_parse.parse(paths["Mohill"])
-    segments += tk_logistika_parser.parse()
-    '''
+    # #Готово
+    # segments += fesco_parser.parse(paths["Fesco"])
+    # #segments += transcontainer_parse.parse(paths["TransContainer"])
+    # segments += rustrans_parse.parse(paths["RusTrans"])
+    # segments += eurosib_parse.parse()
+    # segments += grandlog_parser.parse(paths["GrandLog"]) #май
+    # segments += tcl_baltic_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf")
+    # segments += tcl_asia_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2026 ASIA LINE   (2).pdf")
+    # segments += khasan_parser.parse(paths["Khasan"])
+    # segments += grandlog_parser.parse_GrandLog_offer(paths["GrandLog_sea"]) #май
+    # segments += mohill_parse.parse(paths["Mohill"])
+    # segments += tk_logistika_parser.parse()
+    # '''
     
-    #segments += shenzhen_space_logistics_parser.parse(TransportCompanies)
-    #segments += shenzhen_wotu_international_parser.parse(TransportCompanies)
+    # #segments += shenzhen_space_logistics_parser.parse(TransportCompanies)
+    # #segments += shenzhen_wotu_international_parser.parse(TransportCompanies)
     
-    #segments += shenzhen_wotu_international_logistics_parser.parse(
-    #    paths["Shenzhen_Wotu_Logistics"]
-    #)
+    # #segments += shenzhen_wotu_international_logistics_parser.parse(
+    # #    paths["Shenzhen_Wotu_Logistics"]
+    # #)
     
-    '''
-    segments += marmedcontainer_parse.parse(paths["MarmedContainer"])
-    segments += HS_CHINA_LIMITED_parse.parse(paths["HS_CHINA_LIMITED"])
-    segments += Torgmoll_parse.parse(paths["Torgmoll"])
-    segments += mohill_parse.parse(paths["Mohill"])
-    segments += tml_parser.parse(TransportCompanies)
-    segments += gw_china_limited_parser.parse(TransportCompanies)
-    segments += shenzhen_eagleway_supply_chain_management_parser.parse(
-        TransportCompanies
-    )
-    segments += lcl_parser.parse(TransportCompanies)
-    segments += amethyst_parser.parse(TransportCompanies)
-    segments += hesion_global_logistics_parser.parse(TransportCompanies)
-    segments += ningbo_ystar_logistics_parser.parse(TransportCompanies)
-    segments += unknown_company1_parser.parse(TransportCompanies)
-    segments += spacelog_parser.parse(TransportCompanies)
-    tables_data_MoroLogistics = moro_logistics_parser.get_tables_pdf_MoroLogistics(
-        "", paths["MoroLogistics"], "Moro Logistics"
-    )
-    segments += moro_logistics_parser.parse(tables_data_MoroLogistics, company_name="Moro Logistics")
-    segments += transforever_international_forwarding_parser.parse(TransportCompanies)
-    segments += shaanxi_coal_international_logistics_parser.parse(TransportCompanies)
-    segments += unknown_company4_parser.parse(TransportCompanies)
-    segments += unknown_company3_parser.parse(TransportCompanies)
-    segments += unknown_company2_parser.parse(paths["UnknownCompany2"])
-    segments += shenzhen_interrail_logistics_parser.parse(paths["SHENZHEN_INTERRAIL"])
+    # '''
+    # segments += marmedcontainer_parse.parse(paths["MarmedContainer"])
+    # segments += HS_CHINA_LIMITED_parse.parse(paths["HS_CHINA_LIMITED"])
+    # segments += Torgmoll_parse.parse(paths["Torgmoll"])
+    # segments += mohill_parse.parse(paths["Mohill"])
+    # segments += tml_parser.parse(TransportCompanies)
+    # segments += gw_china_limited_parser.parse(TransportCompanies)
+    # segments += shenzhen_eagleway_supply_chain_management_parser.parse(
+    #     TransportCompanies
+    # )
+    # segments += lcl_parser.parse(TransportCompanies)
+    # segments += amethyst_parser.parse(TransportCompanies)
+    # segments += hesion_global_logistics_parser.parse(TransportCompanies)
+    # segments += ningbo_ystar_logistics_parser.parse(TransportCompanies)
+    # segments += unknown_company1_parser.parse(TransportCompanies)
+    # segments += spacelog_parser.parse(TransportCompanies)
+    # tables_data_MoroLogistics = moro_logistics_parser.get_tables_pdf_MoroLogistics(
+    #     "", paths["MoroLogistics"], "Moro Logistics"
+    # )
+    # segments += moro_logistics_parser.parse(tables_data_MoroLogistics, company_name="Moro Logistics")
+    # segments += transforever_international_forwarding_parser.parse(TransportCompanies)
+    # segments += shaanxi_coal_international_logistics_parser.parse(TransportCompanies)
+    # segments += unknown_company4_parser.parse(TransportCompanies)
+    # segments += unknown_company3_parser.parse(TransportCompanies)
+    # segments += unknown_company2_parser.parse(paths["UnknownCompany2"])
+    # segments += shenzhen_interrail_logistics_parser.parse(paths["SHENZHEN_INTERRAIL"])
     
 
     return segments_to_df(segments)
@@ -341,6 +341,8 @@ PARSER_REGISTRY = [
     ("unknown_company3", unknown_company3_parser.parse, (TC_XLSX,)),
     ("shenzhen_space_logistics", shenzhen_space_logistics_parser.parse, (TC_XLSX,)),
     ("shenzhen_wotu_international", shenzhen_wotu_international_parser.parse, (TC_XLSX,)),
+    ("atrans_global", atrans_global_parser.parse, ("data/КП 10.02.2026 (1).pdf",)),
+    ("sansko_new", sansko_new_parser.parse, ("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf",)),
 ]
 
 
@@ -369,11 +371,76 @@ def parse_all_full(verbose: bool = True):
     return segments_to_df(segments), report
 
 
+# ============================================================================
+# ЗАПУСК ТОЛЬКО НОВЫХ ПАРСЕРОВ (те, что скидывали в чат)
+# ============================================================================
+
+def parse_selected():
+    """
+    Запускает только парсеры, для которых вы присылали файлы в чат.
+    Остальные парсеры (старые) не вызываются.
+    """
+    segments = []
+
+    # 1. Атранс Глобал
+    segments += atrans_global_parser.parse("data/КП 10.02.2026 (1).pdf")
+
+    # 2. ГрандЛог — повагонка
+    segments += grandlog_wagon_parser.parse("data/(ПОВАГОНКА) GrandLog ЖД (2).PDF")
+
+    # 3. ГрандЛог — таможенный склад
+    segments += grandlog_terminal_parser.parse("data/GrandLog_Тамож. склад. (2).pdf")
+
+    # 4. Хасан (DOCX)
+    segments += khasan_docx_parser.parse("data/Хасан (1).docx")
+
+    # 5. РусТранс Групп (Тариф.xlsx)
+    segments += rustrans_group_parser.parse("data/Тариф.xlsx")
+
+    # 6. Санско (новый)
+    segments += sansko_new_parser.parse("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf")
+
+    # 7. Mohill (новый) — если файл есть
+    segments += mohill_new_parser.parse("data/Notice MOHILL Line Far East JUNE (24.06).xlsx")
+
+    # 8. Neco Line
+    segments += neco_line_parser.parse("data/NLA IMP RUVVO JUL 26 v1.1.xlsx")
+
+    # 9. PPK-1 Import
+    segments += ppk1_import_parser.parse("data/PPK-1 IMPORT SEA + RAIL July 3.1.xlsx")
+
+    # 10. Логопер (новый)
+    segments += logoper_new_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 16.01.2026.pdf")
+
+    # 11. TDG (Транспорт Девелопмент Групп)
+    segments += tdg_parser.parse("data/ТДГ.docx")
+
+    # 12. TML Income
+    segments += tml_income_parser.parse("data/TML RUS INCOME.xlsx")
+
+    # 13. Ametist Dropoff
+    segments += ametist_dropoff_parser.parse("data/Drop off rates July.pdf")
+
+    # 14. Sea Rail Operator
+    segments += sea_rail_operator_parser.parse("data/КП Море + повагонка с 1 июля.pdf")
+
+    # 15. TransContainer Vietnam
+    segments += transcontainer_vietnam_parser.parse("data/КП Вьетнам 01.08 (ВМРП).pdf")
+
+    # 16. Railtrust Sinokor
+    segments += railtrust_sinokor_parser.parse("data/Прайс Рейл Траст Синокор с 06072026.pdf")
+
+    return segments_to_df(segments)
+
+
 def start_parse():
-    df_all, _report = parse_all_full()
+    df_all = parse_selected()
     with pd.ExcelWriter("tariff_analysis_TEST.xlsx") as writer:
         df_all.to_excel(writer, sheet_name="Raw Data", index=False)
+    print("✅ Excel создан (только новые парсеры)")
     exit(0)
+
+
 start_parse()
 '''
 if __name__ == "__main__":
