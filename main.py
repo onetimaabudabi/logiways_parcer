@@ -1,463 +1,168 @@
+"""Сбор тарифов по 16 «старым» компаниям и выгрузка в tariff_analysis_TEST.xlsx.
+
+Список компаний зафиксирован и совпадает с companies_all.json:
+    ТрансКонтейнер, РусТранс Групп, Посейдон, Рейл Траст, Ametist Line,
+    FESCO, TLC Baltic Line, Логопер, KHASAN, EuroSib, GrandLog, Mohill Rus,
+    ТК Логистика, Гарант Интермодал, Panda Express Line, Sunsko.
+
+Новые парсеры (vladmorrybport, atrans_global, khasan_docx, rustrans_group,
+sansko_new, logoper_new, mohill_new, neco_line, ppk1_import, tdg, tml_income,
+railtrust_sinokor, transcontainer_vietnam, ametist_dropoff, grandlog_wagon,
+grandlog_terminal, sea_rail_operator и прочие) здесь НЕ импортируются и не
+вызываются — они дают другие названия компаний и в этот список не входят.
+
+Каждый парсер вызывается изолированно: падение одного не срывает прогон,
+а попадает в итоговый отчёт.
+"""
+
+import io
+import contextlib
+
 import pandas as pd
-import os
 
 from parsers.utils import segments_to_df
 
-import parsers.atrans_global as atrans_global_parser
-import parsers.sansko_new as sansko_new_parser
-import parsers.amethyst as amethyst_parser
-import parsers.eurosib as eurosib_parse
-import parsers.grandlog as grandlog_parser
-import parsers.gw_china_limited as gw_china_limited_parser
-import parsers.hesion_global_logistics as hesion_global_logistics_parser
-import parsers.hs_china_limited as HS_CHINA_LIMITED_parse
-import parsers.khasan as khasan_parser
-import parsers.lcl as lcl_parser
-import parsers.marmedcontainer as marmedcontainer_parse
-import parsers.mohill as mohill_parse
-import parsers.moro_logistics as moro_logistics_parser
-import parsers.ningbo_ystar_logistics as ningbo_ystar_logistics_parser
-import parsers.shaanxi_coal_international_logistics as shaanxi_coal_international_logistics_parser
-import parsers.shenzhen_eagleway_supply_chain_management as shenzhen_eagleway_supply_chain_management_parser
-import parsers.shenzhen_interrail_logistics as shenzhen_interrail_logistics_parser
-import parsers.shenzhen_space_logistics as shenzhen_space_logistics_parser
-import parsers.shenzhen_wotu_international as shenzhen_wotu_international_parser
-import parsers.shenzhen_wotu_international_logistics as shenzhen_wotu_international_logistics_parser
-import parsers.spacelog as spacelog_parser
-import parsers.tml as tml_parser
-import parsers.torgmoll as Torgmoll_parse
-import parsers.transforever_international_forwarding as transforever_international_forwarding_parser
-import parsers.unknown_company1 as unknown_company1_parser
-import parsers.unknown_company2 as unknown_company2_parser
-import parsers.unknown_company3 as unknown_company3_parser
-import parsers.unknown_company4 as unknown_company4_parser
-import parsers.transcontainer as transcontainer_parse
-import parsers.rustrans as rustrans_parse
-import parsers.tcl_baltic_line as tcl_baltic_line_parser
-import parsers.tcl_asia_line as tcl_asia_line_parser
-import parsers.fesco as fesco_parser
-import parsers.poseidon as poseidon_parser
-import parsers.railtrust as railtrust_parser
-import parsers.ametist_line as ametist_line_parser
-import parsers.global_logistic as global_logistic_parser
-import parsers.logoper as logoper_parser
-import parsers.tk_logistika as tk_logistika_parser
-import parsers.garant_intermodal as garant_intermodal_parser
-import parsers.sansko as sansko_parser
-import parsers.panda as panda_parser
-
-# --- Парсеры, добавленные позже (все поддерживают parse() без аргументов) ---
-import parsers.ametist_dropoff as ametist_dropoff_parser
-import parsers.grandlog_terminal as grandlog_terminal_parser
-import parsers.grandlog_wagon as grandlog_wagon_parser
-import parsers.khasan_docx as khasan_docx_parser
-import parsers.logoper_new as logoper_new_parser
-import parsers.mohill_new as mohill_new_parser
-import parsers.neco_line as neco_line_parser
-import parsers.ppk1_import as ppk1_import_parser
-import parsers.railtrust_sinokor as railtrust_sinokor_parser
-import parsers.rustrans_group as rustrans_group_parser
-import parsers.sea_rail_operator as sea_rail_operator_parser
-import parsers.tdg as tdg_parser
-import parsers.tml_income as tml_income_parser
-import parsers.transcontainer_vietnam as transcontainer_vietnam_parser
+# --- Парсеры 16 «старых» компаний ------------------------------------------
+import parsers.transcontainer as transcontainer_parser      # ТрансКонтейнер
+import parsers.rustrans as rustrans_parser                  # РусТранс Групп
+import parsers.poseidon as poseidon_parser                  # Посейдон
+import parsers.railtrust as railtrust_parser                # Рейл Траст
+import parsers.ametist_line as ametist_line_parser          # Ametist Line
+import parsers.fesco as fesco_parser                        # FESCO
+import parsers.tcl_baltic_line as tcl_baltic_line_parser    # TLC Baltic Line
+import parsers.tcl_asia_line as tcl_asia_line_parser        # TLC Baltic Line
+import parsers.logoper as logoper_parser                    # Логопер
+import parsers.khasan as khasan_parser                      # KHASAN
+import parsers.eurosib as eurosib_parser                    # EuroSib
+import parsers.grandlog as grandlog_parser                  # GrandLog
+import parsers.mohill as mohill_parser                      # Mohill Rus
+import parsers.tk_logistika as tk_logistika_parser          # ТК Логистика
+import parsers.garant_intermodal as garant_intermodal_parser  # Гарант Интермодал
+import parsers.panda as panda_parser                        # Panda Express Line
+import parsers.sansko as sansko_parser                      # Sunsko
 
 
-'''
-Мармед - Контейнерное Агенство
-HS CHINA LIMITED
-Torgmoll
-Mohill Rus - не парсится VVO+Railway
-TML - порт не парсим
-GW CHINA LIMITED - tt, Via, дата
-Shenzhen Eagleway Supply Chain Management - стация, via, etd
-LCL - add type start and end
-Amethyst - add type start and end
-Hesion Global Logistics - etd, VIA
-NingBo Y-STAR Logistics - free time
-UnknownCompany1 - ?
-Spacelog - много чего 
-Moro Logistics
-Transforever International Forwarding
-Shaanxi Coal International Logistics 
-Неизвестная_компания_4
-Неизвестная_компания_3
-Неизвестная_компания_2
-SHENZHEN INTERRAIL LOGISTICS
+# Реестр: (метка, компания, вызываемое, аргументы).
+# Пустые аргументы — парсер сам находит файл или тянет данные с сайта.
+PARSERS = [
+    ("transcontainer", "ТрансКонтейнер", transcontainer_parser.parse,
+     ("data/0916.pdf",)),
 
-'''
+    ("rustrans", "РусТранс Групп", rustrans_parser.parse,
+     ("data/RusTrans.xlsx",)),
 
-PATHS_old = {
-    "TransContainer": "data/0916.pdf",
-    "RusTrans": "data/RusTrans.xlsx",
-    "MarmedContainer": "data/Marmed-container.xlsx",
-    "HS_CHINA_LIMITED": "data/HS_CHINA_LIMITED.xlsx",
-    "Torgmoll": "data/Torgmoll.xlsx",
-    "Mohill": "data/Mohill.xlsx",
-    "TransportCompanies": "Транспортные компании.xlsx",
-    "GrandLog": "D:/Logiways/parser/data/GrandLog ЖД.pdf",
-    "GrandLog_sea": "D:/Logiways/parser/data/Коммерческое предложение на морские перевозки с 15 апреля 2026 г..pdf",
-    "MoroLogistics": "D:/Logiways/Август/Тарифы+ Расписание/24. Moro Logistics/Тариф.pdf",
-    "UnknownCompany2": "D:/Logiways/Ноябрь/Тарифы+ Расписание-3/30. Неизвестная компания_2/Тариф.pdf",
-    "Khasan": "D:/Logiways/parser/data/хасан2204.docx",
-    "SHENZHEN_INTERRAIL": "D:/Logiways/Ноябрь/Тарифы+ Расписание-3/27. SHENZHEN INTERRAIL LOGISTICS/Тариф+Расписание_2.pdf",
-    "Shenzhen_Wotu_Logistics": "D:/Logiways/Ноябрь/Тарифы+ Расписание-3/25. Shenzhen Wotu International Logistics/Тариф.pdf",
-    "Fesco": "data/FESCO Shuttles THROUGH from 01.02.2026 (COC RUR) (прил. 1 к Приказу № 19 от 19.01.2026) - upd.pdf",
-    "Poseidon": "data/Прием и отправка из портов с 15.03.2026 по 31.03.2026НДС 0%.docx",
+    ("poseidon", "Посейдон", poseidon_parser.parse,
+     ("data/Прием и отправка из портов с 15.03.2026 по 31.03.2026НДС 0%.docx",)),
+
+    ("railtrust", "Рейл Траст", railtrust_parser.parse,
+     ("data/Прайс Рейл Траст с 01.03.26.pdf",)),
+
+    ("ametist_line", "Ametist Line", ametist_line_parser.parse,
+     ("data/February 2026 Rates (2).pdf",)),
+
+    ("fesco", "FESCO", fesco_parser.parse,
+     ("data/FESCO Shuttles THROUGH from 01.02.2026 (COC RUR) "
+      "(прил. 1 к Приказу № 19 от 19.01.2026) - upd.pdf",)),
+
+    # TLC Baltic Line: в репозитории файлов нет, в PATHS_old были прописаны
+    # пути с чужой машины (D:/Logiways/Диск/TCL Baltic Line/...).
+    # Положите PDF в data/ и раскомментируйте.
+    # ("tcl_baltic_line", "TLC Baltic Line", tcl_baltic_line_parser.parse,
+    #  ("data/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf",)),
+    # ("tcl_asia_line", "TLC Baltic Line", tcl_asia_line_parser.parse,
+    #  ("data/КП Февраль 2026 ASIA LINE   (2).pdf",)),
+
+    ("logoper", "Логопер", logoper_parser.parse,
+     ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - "
+      "Мск Екб Нск от 30.04.2026.pdf",)),
+
+    ("khasan", "KHASAN", khasan_parser.parse,
+     ("data/хасан2204.docx",)),
+
+    # EuroSib тянет прайс и расписание со своего сайта (cont.eurosib.biz).
+    # Требуется доступ в интернет; локальные копии лежат в download/.
+    ("eurosib", "EuroSib", eurosib_parser.parse, ()),
+
+    ("grandlog", "GrandLog", grandlog_parser.parse,
+     ("data/GrandLog ЖД.pdf",)),
+
+    ("mohill", "Mohill Rus", mohill_parser.parse,
+     ("data/Notice MOHILL Line Far East JUNE (25.05).xlsx",)),
+
+    ("tk_logistika", "ТК Логистика", tk_logistika_parser.parse, ()),
+
+    ("garant_intermodal_1", "Гарант Интермодал", garant_intermodal_parser.parse,
+     ("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf",)),
+    ("garant_intermodal_2", "Гарант Интермодал", garant_intermodal_parser.parse,
+     ("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
+    ("garant_intermodal_3", "Гарант Интермодал", garant_intermodal_parser.parse,
+     ("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf",)),
+    ("garant_intermodal_4", "Гарант Интермодал", garant_intermodal_parser.parse,
+     ("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
+
+    ("panda", "Panda Express Line", panda_parser.parse,
+     ("data/Панда.pdf",)),
+
+    ("sansko", "Sunsko", sansko_parser.parse,
+     ("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf",)),
+]
+
+# Компании, которые должны получиться на выходе (сверяется в конце прогона).
+EXPECTED_COMPANIES = {
+    "ТрансКонтейнер", "РусТранс Групп", "Посейдон", "Рейл Траст",
+    "Ametist Line", "FESCO", "TLC Baltic Line", "Логопер", "KHASAN",
+    "EuroSib", "GrandLog", "Mohill Rus", "ТК Логистика",
+    "Гарант Интермодал", "Panda Express Line", "Sunsko",
 }
 
-PATHS = [
-    {
-        "company":"Khasan",
-        "folder": "drive/downloads/",
-        "parser": khasan_parser
-    },
-    {
-        "company":"LCL",
-        "folder": "drive/downloads/",
-        "parser": lcl_parser
-    },
-    {
-        "company":"Shenzhen Wotu Logistics",
-        "folder": "drive/downloads/",
-        "parser": shenzhen_wotu_international_logistics_parser
-    },
-    {
-        "company":"TransContainer",
-        "folder": "drive/downloads/",
-        "parser": transcontainer_parse
-    },
-    {
-        "company":"RusTrans",
-        "folder": "drive/downloads/",
-        "parser": rustrans_parse
-    },
-    {
-        "company":"Torgmoll",
-        "folder": "drive/downloads/",
-        "parser": Torgmoll_parse
-    },
-    {
-        "company":"TML",
-        "folder": "drive/downloads/",
-        "parser": tml_parser
-    },
-    {
-        "company":"Spacelog",
-        "folder": "drive/downloads/",
-        "parser": spacelog_parser
-    },
-    {
-        "company":"EuroSib",
-        "folder": "drive/downloads/",
-        "parser": eurosib_parse
-    },
-    {
-        "company":"GrandLog",
-        "folder": "drive/downloads/",
-        "parser": grandlog_parser
-    },
-    {
-        "company":"Amethyst",
-        "folder": "drive/downloads/",
-        "parser": amethyst_parser
-    },
-    {
-        "company":"Mohill",
-        "folder": "drive/downloads/",
-        "parser": mohill_parse
-    },
-    {
-        "company": "TLC Baltic Line",
-        "folder": "D:/Logiways/Диск/TCL Baltic Line/",
-        "parser": tcl_baltic_line_parser,
-        "filename": "КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf"
-    },
-    {
-        "company": "TLC Asia Line",
-        "folder": "D:/Logiways/Диск/TCL Baltic Line/",
-        "parser": tcl_asia_line_parser,
-        "filename": "КП Февраль 2026 ASIA LINE   (2).pdf"
-    },
-    {
-        "company": "RailTrust",
-        "folder": "data/",
-        "parser": railtrust_parser,
-        "filename": "Прайс Рейл Траст с 01.03.26.pdf"
-    },
-]
 
-def parse_all(paths=None):
-    segments = []
-    paths = paths or PATHS_old #PATHS
-    TransportCompanies = paths.get("TransportCompanies", "Транспортные компании.xlsx")
-    #segments += khasan_parser.parse(paths["Khasan"])
-    '''
-    for path in paths:
-        folder = path.get("folder","") + path.get("company", "")
-        if os.path.exists(folder):
-            files = [os.path.join(folder, f) for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-            if len(files) != 0:
-                segments += path["parser"].parse(files[0])
-    '''
-
-    #segments += eurosib_parse.parse()
-    #segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 30.04.2026.pdf")
-    #segments += panda_parser.parse("data/Панда.pdf")
-    segments += mohill_parse.parse("data/Notice MOHILL Line Far East JUNE (25.05).xlsx")
-    segments += sansko_new_parser.parse("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf")
-    # Санско
-    #segments += sansko_parser.parse("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf")
-
-    
-    # Гарант Интермодал - 5 файлов
-    # segments += garant_intermodal_parser.parse("data/01.04.-30.04.-Все-порты-жд-Москва (1).pdf")
-    # segments += garant_intermodal_parser.parse("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf")
-    # segments += garant_intermodal_parser.parse("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf")
-    # segments += garant_intermodal_parser.parse("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf")
-    # segments += garant_intermodal_parser.parse("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf")
-    # '''
-    # '''
-    # #Готово
-    # segments += poseidon_parser.parse(paths["Poseidon"])
-    # segments += railtrust_parser.parse("data/Прайс Рейл Траст с 01.03.26.pdf")
-    # segments += railtrust_parser.parse_skvoznoy("data/Прайс Рейл Траст сквозной с 10.03.2026.pdf")
-    # segments += ametist_line_parser.parse("data/February 2026 Rates (2).pdf")
-    
-    # segments += logoper_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 11.03.2026 (1).pdf")
-    
-    # #segments += global_logistic_parser.parse("data/Dear Baksanovaig.docx") # тут только truck
-    
-    # #Готово
-    # segments += fesco_parser.parse(paths["Fesco"])
-    # #segments += transcontainer_parse.parse(paths["TransContainer"])
-    # segments += rustrans_parse.parse(paths["RusTrans"])
-    # segments += eurosib_parse.parse()
-    # segments += grandlog_parser.parse(paths["GrandLog"]) #май
-    # segments += tcl_baltic_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf")
-    # segments += tcl_asia_line_parser.parse("D:/Logiways/Диск/TCL Baltic Line/КП Февраль 2026 ASIA LINE   (2).pdf")
-    # segments += khasan_parser.parse(paths["Khasan"])
-    # segments += grandlog_parser.parse_GrandLog_offer(paths["GrandLog_sea"]) #май
-    # segments += mohill_parse.parse(paths["Mohill"])
-    # segments += tk_logistika_parser.parse()
-    # '''
-    
-    # #segments += shenzhen_space_logistics_parser.parse(TransportCompanies)
-    # #segments += shenzhen_wotu_international_parser.parse(TransportCompanies)
-    
-    # #segments += shenzhen_wotu_international_logistics_parser.parse(
-    # #    paths["Shenzhen_Wotu_Logistics"]
-    # #)
-    
-    # '''
-    # segments += marmedcontainer_parse.parse(paths["MarmedContainer"])
-    # segments += HS_CHINA_LIMITED_parse.parse(paths["HS_CHINA_LIMITED"])
-    # segments += Torgmoll_parse.parse(paths["Torgmoll"])
-    # segments += mohill_parse.parse(paths["Mohill"])
-    # segments += tml_parser.parse(TransportCompanies)
-    # segments += gw_china_limited_parser.parse(TransportCompanies)
-    # segments += shenzhen_eagleway_supply_chain_management_parser.parse(
-    #     TransportCompanies
-    # )
-    # segments += lcl_parser.parse(TransportCompanies)
-    # segments += amethyst_parser.parse(TransportCompanies)
-    # segments += hesion_global_logistics_parser.parse(TransportCompanies)
-    # segments += ningbo_ystar_logistics_parser.parse(TransportCompanies)
-    # segments += unknown_company1_parser.parse(TransportCompanies)
-    # segments += spacelog_parser.parse(TransportCompanies)
-    # tables_data_MoroLogistics = moro_logistics_parser.get_tables_pdf_MoroLogistics(
-    #     "", paths["MoroLogistics"], "Moro Logistics"
-    # )
-    # segments += moro_logistics_parser.parse(tables_data_MoroLogistics, company_name="Moro Logistics")
-    # segments += transforever_international_forwarding_parser.parse(TransportCompanies)
-    # segments += shaanxi_coal_international_logistics_parser.parse(TransportCompanies)
-    # segments += unknown_company4_parser.parse(TransportCompanies)
-    # segments += unknown_company3_parser.parse(TransportCompanies)
-    # segments += unknown_company2_parser.parse(paths["UnknownCompany2"])
-    # segments += shenzhen_interrail_logistics_parser.parse(paths["SHENZHEN_INTERRAIL"])
-    
-
-    return segments_to_df(segments)
-
-# ============================================================================
-# Полный прогон всех парсеров.
-#
-# Историческая parse_all() оставлена как есть: в ней активен ровно один вызов,
-# остальные 51 закомментированы или лежат внутри '''-блоков.
-# Ниже — реестр, где каждый парсер вызывается изолированно: падение одного
-# не срывает весь прогон, а попадает в отчёт.
-# ============================================================================
-TC_XLSX = "Транспортные компании.xlsx"
-
-# (метка, вызываемое, аргументы) — аргументы пустые там, где парсер сам ищет файл
-PARSER_REGISTRY = [
-    # --- парсеры с автопоиском файла ---
-    ("ametist_dropoff", ametist_dropoff_parser.parse, ()),
-    ("grandlog_terminal", grandlog_terminal_parser.parse, ()),
-    ("grandlog_wagon", grandlog_wagon_parser.parse, ()),
-    ("khasan_docx", khasan_docx_parser.parse, ()),
-    ("logoper_new", logoper_new_parser.parse, ()),
-    ("mohill_new", mohill_new_parser.parse, ()),
-    ("neco_line", neco_line_parser.parse, ()),
-    ("ppk1_import", ppk1_import_parser.parse, ()),
-    ("railtrust_sinokor", railtrust_sinokor_parser.parse, ()),
-    ("rustrans_group", rustrans_group_parser.parse, ()),
-    ("sea_rail_operator", sea_rail_operator_parser.parse, ()),
-    ("tdg", tdg_parser.parse, ()),
-    ("tml_income", tml_income_parser.parse, ()),
-    ("transcontainer_vietnam", transcontainer_vietnam_parser.parse, ()),
-    # --- парсеры с явными путями ---
-    ("logoper", logoper_parser.parse, ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 30.04.2026.pdf",)),
-    ("panda", panda_parser.parse, ("data/Панда.pdf",)),
-    ("sansko", sansko_parser.parse, ("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf",)),
-    ("garant_intermodal_1", garant_intermodal_parser.parse, ("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf",)),
-    ("garant_intermodal_2", garant_intermodal_parser.parse, ("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
-    ("garant_intermodal_3", garant_intermodal_parser.parse, ("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf",)),
-    ("garant_intermodal_4", garant_intermodal_parser.parse, ("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
-    ("railtrust", railtrust_parser.parse, ("data/Прайс Рейл Траст с 01.03.26.pdf",)),
-    ("ametist_line", ametist_line_parser.parse, ("data/February 2026 Rates (2).pdf",)),
-    ("global_logistic", global_logistic_parser.parse, ("data/Dear Baksanovaig.docx",)),
-    ("fesco", fesco_parser.parse, (PATHS_old["Fesco"],)),
-    ("poseidon", poseidon_parser.parse, (PATHS_old["Poseidon"],)),
-    ("transcontainer", transcontainer_parse.parse, (PATHS_old["TransContainer"],)),
-    ("rustrans", rustrans_parse.parse, (PATHS_old["RusTrans"],)),
-    ("marmedcontainer", marmedcontainer_parse.parse, (PATHS_old["MarmedContainer"],)),
-    ("hs_china_limited", HS_CHINA_LIMITED_parse.parse, (PATHS_old["HS_CHINA_LIMITED"],)),
-    ("torgmoll", Torgmoll_parse.parse, (PATHS_old["Torgmoll"],)),
-    ("mohill", mohill_parse.parse, ("data/Notice MOHILL Line Far East JUNE (25.05).xlsx",)),
-    ("tk_logistika", tk_logistika_parser.parse, ()),
-    ("tml", tml_parser.parse, (TC_XLSX,)),
-    ("gw_china_limited", gw_china_limited_parser.parse, (TC_XLSX,)),
-    ("shenzhen_eagleway", shenzhen_eagleway_supply_chain_management_parser.parse, (TC_XLSX,)),
-    ("lcl", lcl_parser.parse, (TC_XLSX,)),
-    ("amethyst", amethyst_parser.parse, (TC_XLSX,)),
-    ("hesion_global_logistics", hesion_global_logistics_parser.parse, (TC_XLSX,)),
-    ("ningbo_ystar_logistics", ningbo_ystar_logistics_parser.parse, (TC_XLSX,)),
-    ("unknown_company1", unknown_company1_parser.parse, (TC_XLSX,)),
-    ("spacelog", spacelog_parser.parse, (TC_XLSX,)),
-    ("transforever", transforever_international_forwarding_parser.parse, (TC_XLSX,)),
-    ("shaanxi_coal", shaanxi_coal_international_logistics_parser.parse, (TC_XLSX,)),
-    ("unknown_company4", unknown_company4_parser.parse, (TC_XLSX,)),
-    ("unknown_company3", unknown_company3_parser.parse, (TC_XLSX,)),
-    ("shenzhen_space_logistics", shenzhen_space_logistics_parser.parse, (TC_XLSX,)),
-    ("shenzhen_wotu_international", shenzhen_wotu_international_parser.parse, (TC_XLSX,)),
-    ("atrans_global", atrans_global_parser.parse, ("data/КП 10.02.2026 (1).pdf",)),
-    ("sansko_new", sansko_new_parser.parse, ("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf",)),
-]
-
-
-def parse_all_full(verbose: bool = True):
-    """Запускает все парсеры из PARSER_REGISTRY и возвращает (df, отчёт)."""
-    import io, contextlib
+def parse_selected(verbose: bool = True):
+    """Запускает парсеры из PARSERS и возвращает (df, отчёт)."""
     segments, report = [], []
-    for label, fn, args in PARSER_REGISTRY:
+
+    for label, company, func, args in PARSERS:
         try:
             with contextlib.redirect_stdout(io.StringIO()):
-                segs = fn(*args)
-            segments += segs
-            report.append((label, len(segs), None))
+                result = func(*args)
+            segments += result
+            report.append((label, company, len(result), None))
         except FileNotFoundError as e:
-            report.append((label, 0, f"нет файла: {str(e)[:70]}"))
+            report.append((label, company, 0, f"нет файла: {str(e)[:70]}"))
         except Exception as e:
-            report.append((label, 0, f"{type(e).__name__}: {str(e)[:70]}"))
+            report.append((label, company, 0, f"{type(e).__name__}: {str(e)[:70]}"))
+
+    df = segments_to_df(segments)
+
     if verbose:
-        print(f"{'парсер':30} {'сегм.':>6}  примечание")
-        for label, n, err in report:
-            print(f"  {label:28} {n:>6}  {err or ''}")
-        okn = sum(1 for _, _, e in report if e is None)
-        print(f"\nПарсеров отработало: {okn}/{len(report)}; сегментов: {len(segments)}")
-        for label, n, err in report:
-            if err: print(f"  ПРОПУЩЕН {label}: {err}")
-    return segments_to_df(segments), report
+        print(f"{'парсер':22} {'компания':20} {'сегм.':>6}  примечание")
+        for label, company, count, err in report:
+            print(f"  {label:20} {company:20} {count:>6}  {err or ''}")
 
+        ok = sum(1 for *_, err in report if err is None)
+        print(f"\nПарсеров отработало: {ok}/{len(report)}; сегментов: {len(segments)}")
 
-# ============================================================================
-# ЗАПУСК ТОЛЬКО НОВЫХ ПАРСЕРОВ (те, что скидывали в чат)
-# ============================================================================
+        if not df.empty and "company" in df.columns:
+            got = set(df["company"].dropna().unique())
+            print(f"\nКомпаний в выгрузке: {len(got)}")
+            for name in sorted(got):
+                print(f"  + {name}: {int((df['company'] == name).sum())} строк")
+            missing = EXPECTED_COMPANIES - got
+            if missing:
+                print(f"\nНЕ ПОПАЛИ в выгрузку: {sorted(missing)}")
+            extra = got - EXPECTED_COMPANIES
+            if extra:
+                print(f"ЛИШНИЕ (нет в companies_all.json): {sorted(extra)}")
 
-def parse_selected():
-    """
-    Запускает только парсеры, для которых вы присылали файлы в чат.
-    Остальные парсеры (старые) не вызываются.
-    """
-    segments = []
-
-    # 1. Атранс Глобал
-    segments += atrans_global_parser.parse("data/КП 10.02.2026 (1).pdf")
-
-    # 2. ГрандЛог — повагонка
-    segments += grandlog_wagon_parser.parse("data/(ПОВАГОНКА) GrandLog ЖД (2).PDF")
-
-    # 3. ГрандЛог — таможенный склад
-    segments += grandlog_terminal_parser.parse("data/GrandLog_Тамож. склад. (2).pdf")
-
-    # 4. Хасан (DOCX)
-    segments += khasan_docx_parser.parse("data/Хасан (1).docx")
-
-    # 5. РусТранс Групп (Тариф.xlsx)
-    segments += rustrans_group_parser.parse("data/Тариф.xlsx")
-
-    # 6. Санско (новый)
-    segments += sansko_new_parser.parse("data/RATES 16.07 - 31.07 RUS Sunsko Far East Intermodal Service.pdf")
-
-    # 7. Mohill (новый) — если файл есть
-    segments += mohill_new_parser.parse("data/Notice MOHILL Line Far East JUNE (24.06).xlsx")
-
-    # 8. Neco Line
-    segments += neco_line_parser.parse("data/NLA IMP RUVVO JUL 26 v1.1.xlsx")
-
-    # 9. PPK-1 Import
-    segments += ppk1_import_parser.parse("data/PPK-1 IMPORT SEA + RAIL July 3.1.xlsx")
-
-    # 10. Логопер (новый)
-    segments += logoper_new_parser.parse("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - Мск Екб Нск от 16.01.2026.pdf")
-
-    # 11. TDG (Транспорт Девелопмент Групп)
-    segments += tdg_parser.parse("data/ТДГ.docx")
-
-    # 12. TML Income
-    segments += tml_income_parser.parse("data/TML RUS INCOME.xlsx")
-
-    # 13. Ametist Dropoff
-    segments += ametist_dropoff_parser.parse("data/Drop off rates July.pdf")
-
-    # 14. Sea Rail Operator
-    segments += sea_rail_operator_parser.parse("data/КП Море + повагонка с 1 июля.pdf")
-
-    # 15. TransContainer Vietnam
-    segments += transcontainer_vietnam_parser.parse("data/КП Вьетнам 01.08 (ВМРП).pdf")
-
-    # 16. Railtrust Sinokor
-    segments += railtrust_sinokor_parser.parse("data/Прайс Рейл Траст Синокор с 06072026.pdf")
-
-    return segments_to_df(segments)
+    return df, report
 
 
 def start_parse():
-    df_all = parse_selected()
+    df, _report = parse_selected()
     with pd.ExcelWriter("tariff_analysis_TEST.xlsx") as writer:
-        df_all.to_excel(writer, sheet_name="Raw Data", index=False)
-    print("✅ Excel создан (только новые парсеры)")
-    exit(0)
+        df.to_excel(writer, sheet_name="Raw Data", index=False)
+    print(f"\nЗаписано в tariff_analysis_TEST.xlsx: {len(df)} строк")
+    return df
 
 
-start_parse()
-'''
 if __name__ == "__main__":
-    
-    df_all = parse_all()
-    with pd.ExcelWriter("tariff_analysis_ALL_NEW.xlsx") as writer:
-        df_all.to_excel(writer, sheet_name="Raw Data", index=False)
-    exit(0)
-    #run_parsing_and_send()
-    df_EuroSib = parse_EuroSib()
-    with pd.ExcelWriter("tariff_analysis_EuroSib.xlsx") as writer:
-        df_EuroSib.to_excel(writer, sheet_name="Raw Data", index=False)
-    df_TransContainer = segments_to_df(parse_TransContainer(PATHS["TransContainer"]))
-    with pd.ExcelWriter("tariff_analysis_TransContainer.xlsx") as writer:
-        df_TransContainer.to_excel(writer, sheet_name="Raw Data", index=False)
-    
-    df_RusTrans = segments_to_df(parse_RusTrans(PATHS["RusTrans"]))
-    with pd.ExcelWriter("tariff_analysis_RusTrans.xlsx") as writer:
-        df_RusTrans.to_excel(writer, sheet_name="Raw Data", index=False)
-'''
+    start_parse()
