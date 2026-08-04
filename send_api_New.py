@@ -2745,7 +2745,7 @@ if __name__ == "__main__":
     if not tokens:
         print("Авторизация не удалась — дальнейшие запросы бессмысленны.")
         exit(1)
-    print(f"Авторизация успешна. Access_token: {tokens.access_token[:20]}...")
+    print(f"Авторизация успешна. Access_token: {tokens.access_token}")
 
     #result = fill_location_coordinates(client, country_filter="RU", limit=1, yandex_api_key="94d3a1a8-fe5b-40ac-b063-62170967a277")
     

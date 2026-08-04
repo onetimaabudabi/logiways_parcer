@@ -5,7 +5,10 @@
     "contact_last_name": "Иванов",
     "phone": "+74957881717",
     "email": "trcont@trcont.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "РусТранс Групп",
@@ -13,7 +16,10 @@
     "contact_last_name": "Петров",
     "phone": "+79818124015",
     "email": "sales@rustrans-gr.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Посейдон",
@@ -21,7 +27,10 @@
     "contact_last_name": "Хахалов",
     "phone": "+79664454616",
     "email": "hs@inter-log.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Рейл Траст",
@@ -29,7 +38,10 @@
     "contact_last_name": "Алексеев",
     "phone": "+74232568568",
     "email": "zapros@railtrust.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Ametist Line",
@@ -37,7 +49,10 @@
     "contact_last_name": "Викторов",
     "phone": "+78124164748",
     "email": "sales@ametistline.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "FESCO",
@@ -45,7 +60,10 @@
     "contact_last_name": "Екатеринова",
     "phone": "+78002334499",
     "email": "sales@fesco.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "TLC Baltic Line",
@@ -53,7 +71,10 @@
     "contact_last_name": "Сергеев",
     "phone": "+78124016400",
     "email": "import@t-lc.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Логопер",
@@ -61,7 +82,10 @@
     "contact_last_name": "Маркова",
     "phone": "+78005556060",
     "email": "sale@logoper.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "KHASAN",
@@ -69,7 +93,10 @@
     "contact_last_name": "Дмитриев",
     "phone": "+79153938136",
     "email": "sales4@khasanllc.pro",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "EuroSib",
@@ -77,7 +104,10 @@
     "contact_last_name": "Ольгина",
     "phone": "+78123268111",
     "email": "transport@eurosib.biz",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "GrandLog",
@@ -85,7 +115,10 @@
     "contact_last_name": "Сергеев",
     "phone": "+79241102424",
     "email": "customs@grand-log.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Mohill Rus",
@@ -93,7 +126,10 @@
     "contact_last_name": "Muradian",
     "phone": "+79816869492",
     "email": "roksana@mo-hill.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "ТК Логистика",
@@ -101,7 +137,9 @@
     "contact_last_name": "Сергеев",
     "phone": "+79647221288",
     "email": "clients@logistics-klt.com",
-    "languages": ["ru"]
+    "languages": [
+      "ru"
+    ]
   },
   {
     "name": "Гарант Интермодал",
@@ -109,7 +147,10 @@
     "contact_last_name": "Иванова",
     "phone": "+74232302020",
     "email": "office@garant-intermodal.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Panda Express Line",
@@ -117,7 +158,10 @@
     "contact_last_name": "Овся",
     "phone": "+78005005292",
     "email": "sales@pandexline.com",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
   },
   {
     "name": "Sunsko",
@@ -125,6 +169,35 @@
     "contact_last_name": "Овсянников",
     "phone": "+79296813747",
     "email": "a.ovsyannikov@sunskorus.ru",
-    "languages": ["ru", "en"]
+    "languages": [
+      "ru",
+      "en"
+    ]
+  },
+  {
+    "name": "ОАО «Владморрыбпорт»",
+    "contact_first_name": "Хачатур",
+    "contact_last_name": "Мартиросян",
+    "phone": "+72304099609",
+    "email": "vmrp-test@example.com",
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "parsers": [
+      "vladmorrybport"
+    ],
+    "website": "https://vmrp.ru/",
+    "inn": null,
+    "ogrn": null,
+    "address": null,
+    "test": true,
+    "missing": [
+      "inn",
+      "ogrn",
+      "address",
+      "phone: тестовое значение",
+      "email: тестовое значение"
+    ]
   }
 ]
