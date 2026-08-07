@@ -5,10 +5,10 @@
     "contact_last_name": "Иванов",
     "phone": "+74957881717",
     "email": "trcont@trcont.com",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["transcontainer", "transcontainer_vietnam"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "РусТранс Групп",
@@ -16,10 +16,10 @@
     "contact_last_name": "Петров",
     "phone": "+79818124015",
     "email": "sales@rustrans-gr.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["rustrans", "rustrans_group"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Посейдон",
@@ -27,10 +27,10 @@
     "contact_last_name": "Хахалов",
     "phone": "+79664454616",
     "email": "hs@inter-log.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["poseidon"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Рейл Траст",
@@ -38,10 +38,10 @@
     "contact_last_name": "Алексеев",
     "phone": "+74232568568",
     "email": "zapros@railtrust.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["railtrust", "railtrust_sinokor"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Ametist Line",
@@ -49,10 +49,10 @@
     "contact_last_name": "Викторов",
     "phone": "+78124164748",
     "email": "sales@ametistline.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["amethyst", "ametist_line", "ametist_dropoff"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "FESCO",
@@ -60,10 +60,10 @@
     "contact_last_name": "Екатеринова",
     "phone": "+78002334499",
     "email": "sales@fesco.com",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["fesco"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "TLC Baltic Line",
@@ -71,10 +71,10 @@
     "contact_last_name": "Сергеев",
     "phone": "+78124016400",
     "email": "import@t-lc.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["tcl_asia_line", "tcl_baltic_line"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Логопер",
@@ -82,21 +82,21 @@
     "contact_last_name": "Маркова",
     "phone": "+78005556060",
     "email": "sale@logoper.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["logoper", "logoper_new"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
-    "name": "KHASAN",
+    "name": "Хасан",
     "contact_first_name": "Дмитрий",
     "contact_last_name": "Дмитриев",
     "phone": "+79153938136",
     "email": "sales4@khasanllc.pro",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["khasan", "khasan_docx"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "EuroSib",
@@ -104,10 +104,10 @@
     "contact_last_name": "Ольгина",
     "phone": "+78123268111",
     "email": "transport@eurosib.biz",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["eurosib"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "GrandLog",
@@ -115,10 +115,10 @@
     "contact_last_name": "Сергеев",
     "phone": "+79241102424",
     "email": "customs@grand-log.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["grandlog", "grandlog_terminal", "grandlog_wagon"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Mohill Rus",
@@ -126,10 +126,10 @@
     "contact_last_name": "Muradian",
     "phone": "+79816869492",
     "email": "roksana@mo-hill.com",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["mohill", "mohill_new"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "ТК Логистика",
@@ -137,9 +137,10 @@
     "contact_last_name": "Сергеев",
     "phone": "+79647221288",
     "email": "clients@logistics-klt.com",
-    "languages": [
-      "ru"
-    ]
+    "languages": ["ru"],
+    "parsers": ["tk_logistika"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Гарант Интермодал",
@@ -147,10 +148,16 @@
     "contact_last_name": "Иванова",
     "phone": "+74232302020",
     "email": "office@garant-intermodal.com",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": [
+      "garant_intermodal",
+      "garant_local",
+      "garant_coc_imp_exp",
+      "garant_vrangel_st",
+      "garant_vmrp_st"
+    ],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "Panda Express Line",
@@ -158,46 +165,50 @@
     "contact_last_name": "Овся",
     "phone": "+78005005292",
     "email": "sales@pandexline.com",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["panda"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
-    "name": "Sunsko",
+    "name": "Санско",
     "contact_first_name": "Алексей",
     "contact_last_name": "Овсянников",
     "phone": "+79296813747",
     "email": "a.ovsyannikov@sunskorus.ru",
-    "languages": [
-      "ru",
-      "en"
-    ]
+    "languages": ["ru", "en"],
+    "parsers": ["sansko", "sansko_new"],
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   },
   {
     "name": "ОАО «Владморрыбпорт»",
     "contact_first_name": "Хачатур",
     "contact_last_name": "Мартиросян",
-    "phone": "+72304099609",
-    "email": "vmrp-test@example.com",
-    "languages": [
-      "ru",
-      "en"
-    ],
-    "parsers": [
-      "vladmorrybport"
-    ],
+    "phone": "+74232057171",
+    "email": "client-manager@fishport.ru",
+    "languages": ["ru", "en"],
+    "parsers": ["vladmorrybport", "vladmorrybport_01_08"],
     "website": "https://vmrp.ru/",
     "inn": null,
     "ogrn": null,
     "address": null,
     "test": true,
-    "missing": [
-      "inn",
-      "ogrn",
-      "address",
-      "phone: тестовое значение",
-      "email: тестовое значение"
-    ]
+    "missing": ["inn", "ogrn", "address"]
+  },
+  {
+    "name": "ATRANS GLOBAL",
+    "contact_first_name": "Тест",
+    "contact_last_name": "Тестов",
+    "phone": "+78003003700",
+    "email": "zapros@atransdv.ru",
+    "languages": ["ru", "en"],
+    "parsers": ["atrans_global"],
+    "website": "www.atransglobal.ru",
+    "inn": null,
+    "ogrn": null,
+    "address": null,
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   }
 ]

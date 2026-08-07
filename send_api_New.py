@@ -810,7 +810,7 @@ class LogiwaysClient:
         item = self._companies_index.get(key)
         if item:
             print(f"  ✓ Найдена по нормализованному имени: {item.get('name')} "
-                  f"(ID={item['id'][:8]}...)")
+                  f"(ID={item['id']}...)")
             return item["id"]
 
         # Подстрока — только если кандидат ровно один, иначе можно слить
@@ -820,7 +820,7 @@ class LogiwaysClient:
         if len(candidates) == 1:
             item = candidates[0]
             print(f"  ✓ Найдена по частичному совпадению: {item.get('name')} "
-                  f"(ID={item['id'][:8]}...)")
+                  f"(ID={item['id']}...)")
             return item["id"]
         if len(candidates) > 1:
             print(f"  ! Неоднозначное совпадение для {name!r}: "
@@ -852,14 +852,14 @@ class LogiwaysClient:
             # Точное совпадение
             for item in items:
                 if item.get("name","").strip() == company_search_clean:
-                    print(f"  ✓ Найдена компания: {item.get('name')} (ID={item['id'][:8]}...)")
+                    print(f"  ✓ Найдена компания: {item.get('name')} (ID={item['id']}...)")
                     return item["id"]
 
             # Если точного совпадения нет, ищем частичное (игнорируя регистр)
             company_lower = company_search_clean.lower()
             for item in items:
                 if company_lower in item.get("name","").lower():
-                    print(f"  ✓ Найдена компания (partial match): {item.get('name')} (ID={item['id'][:8]}...)")
+                    print(f"  ✓ Найдена компания (partial match): {item.get('name')} (ID={item['id']}...)")
                     return item["id"]
 
             # Ничего не найдено
@@ -2050,11 +2050,15 @@ def build_segments_from_excel_OLD(df, client, company_id):
                             else PortServiceTermType.LILO if "LILO" in conditions \
                             else None
 
+        _valid_from, _valid_to = tariff_validity(row)
         tariff = TariffCreate(
             container_type=ContainerType(row["container_type"]),
             container_ownership=container_ownership,
             port_service_term=port_service_term,
             price_kind="exact",
+            valid_from=_valid_from,
+            valid_to=_valid_to,
+            is_active=True,
             charges=build_charges(row)
         )
 
@@ -2067,6 +2071,25 @@ def build_segments_from_excel_OLD(df, client, company_id):
 
 # Допустимые container_type на сервере
 _VALID_CONTAINER_TYPES = {"20DC", "20GP", "20RF", "20TK", "40HC", "40HQ", "40RF", "20TC", "20FR", "40OT"}
+
+def tariff_validity(row):
+    """Возвращает (valid_from, valid_to) из строки Excel в формате YYYY-MM-DD.
+
+    ВАЖНО: раньше эти поля НЕ передавались в TariffCreate вообще — тарифы
+    уходили на сервер с valid_from=null/valid_to=null, и витрина не показывала
+    их ни на одну дату («таких предложений нет» при успешной загрузке).
+    """
+    def _one(key):
+        raw = row.get(key) if hasattr(row, "get") else None
+        if raw is None:
+            return None
+        text = str(raw).strip()
+        if not text or text.lower() in ("nan", "nat", "none"):
+            return None
+        return convert_to_iso_date(text) or text[:10]
+
+    return _one("valid_from"), _one("valid_to")
+
 
 def get_value(value, default):
     if pd.isna(value):
@@ -2300,11 +2323,20 @@ def build_segments_from_excel(df, client, company_id_dict=None):
         )
 
         if tariff_key not in tariffs_by_segment:
+            _valid_from, _valid_to = tariff_validity(row)
+            if not _valid_from and not _valid_to:
+                print(f"  [WARN] Тариф без срока действия: {row.get('company')} "
+                      f"{row.get('start_point')} -> {row.get('end_point')} "
+                      f"({container_type_raw}). Витрина может его не показать.")
             tariffs_by_segment[tariff_key] = TariffCreate(
                 container_type=container_type_raw,
                 container_ownership=container_ownership,
                 port_service_term=port_service_term,
                 price_kind="exact",
+                valid_from=_valid_from,
+                valid_to=_valid_to,
+                is_active=True,
+                notes=get_value(row.get("conditions", None), None),
                 weight_bands=[]
             )
 
@@ -2895,4 +2927,33 @@ if __name__ == "__main__":
     # Вывод подробной информации по первым 5 сегментам
     #print_segment_details(client, segment_map, limit=5)
 
-    print("Все успешно выполнено")
+    # Итог считаем по фактам, а не печатаем «успешно» безусловно:
+    # раньше эта строка выводилась всегда, даже когда ничего не загрузилось.
+    print("\n" + "=" * 60)
+    print("ИТОГ ЗАГРУЗКИ")
+    print("=" * 60)
+    print(f"  строк в Excel:        {len(df)}")
+    print(f"  сегментов создано:    {len(segment_map)} из {len(segments)}")
+    print(f"  тарифов подготовлено: {len(tariffs_by_segment)}")
+    print(f"  отправлений:          {len(departure_by_segment)}")
+
+    problems = []
+    if not segment_map:
+        problems.append("не создано ни одного сегмента")
+    if len(segment_map) < len(segments):
+        problems.append(f"не загружено сегментов: {len(segments) - len(segment_map)}")
+    if not tariffs_by_segment:
+        problems.append("не подготовлено ни одного тарифа")
+
+    if problems:
+        print("\n  ПРОБЛЕМЫ:")
+        for item in problems:
+            print(f"    - {item}")
+        print("=" * 60)
+        exit(1)
+
+    print("\n  Загрузка завершена без ошибок.")
+    print("  Если предложения не видны на витрине — проверьте, что у тарифов")
+    print("  проставлены valid_from/valid_to и что сегодняшняя дата попадает")
+    print("  в этот период.")
+    print("=" * 60)
