@@ -24,10 +24,15 @@ import pandas as pd
 from parsers.utils import segments_to_df
 
 # --- Парсеры 16 «старых» компаний ------------------------------------------
+import parsers.panda_stavki as panda_stavki_parser
 import parsers.garant_intermodal_soc_shanghai_busan_local as garant_local_parser
 import parsers.garant_intermodal_coc_import_export as garant_coc_parser
 import parsers.garant_intermodal_soc_vrangel_stations as garant_vrangel_parser
 import parsers.garant_intermodal_soc_vmrp_stations as garant_vmrp_parser
+import parsers.fesco_fbss as fesco_fbss_parser
+import parsers.fesco_jtsl as fesco_jtsl_parser
+import parsers.fesco_fcdl as fesco_fcdl_parser
+import parsers.fesco_ftbs_gebze as fesco_ftbs_parser
 import parsers.transcontainer as transcontainer_parser      # ТрансКонтейнер
 import parsers.rustrans as rustrans_parser                  # РусТранс Групп
 import parsers.poseidon as poseidon_parser                  # Посейдон
@@ -52,95 +57,102 @@ import parsers.vladmorrybport_01_08 as vmrp_01_08_parser    # ОАО «Влад�
 # Реестр: (метка, компания, вызываемое, аргументы).
 # Пустые аргументы — парсер сам находит файл или тянет данные с сайта.
 PARSERS = [
-    ("transcontainer", "ТрансКонтейнер", transcontainer_parser.parse,
-     ("data/0916.pdf",)),
+    # ("transcontainer", "ТрансКонтейнер", transcontainer_parser.parse,
+    #  ("data/0916.pdf",)),
 
-    ("rustrans", "РусТранс Групп", rustrans_parser.parse,
-     ("data/RusTrans.xlsx",)),
+    # ("rustrans", "РусТранс Групп", rustrans_parser.parse,
+    #  ("data/RusTrans.xlsx",)),
 
-    ("poseidon", "Посейдон", poseidon_parser.parse,
-     ("data/Прием и отправка из портов с 15.03.2026 по 31.03.2026НДС 0%.docx",)),
+    # ("poseidon", "Посейдон", poseidon_parser.parse,
+    #  ("data/Прием и отправка из портов с 15.03.2026 по 31.03.2026НДС 0%.docx",)),
 
-    ("railtrust", "Рейл Траст", railtrust_parser.parse,
-     ("data/Прайс Рейл Траст с 01.03.26.pdf",)),
+    # ("railtrust", "Рейл Траст", railtrust_parser.parse,
+    #  ("data/Прайс Рейл Траст с 01.03.26.pdf",)),
 
-    ("ametist_line", "Ametist Line", ametist_line_parser.parse,
-     ("data/February 2026 Rates (2).pdf",)),
+    # ("ametist_line", "Ametist Line", ametist_line_parser.parse,
+    #  ("data/February 2026 Rates (2).pdf",)),
 
-    ("fesco", "FESCO", fesco_parser.parse,
-     ("data/FESCO Shuttles THROUGH from 01.02.2026 (COC RUR) "
-      "(прил. 1 к Приказу № 19 от 19.01.2026) - upd.pdf",)),
+    # ("fesco", "FESCO", fesco_parser.parse,
+    #  ("data/FESCO Shuttles THROUGH from 01.02.2026 (COC RUR) "
+    #   "(прил. 1 к Приказу № 19 от 19.01.2026) - upd.pdf",)),
 
     # # TLC Baltic Line: в репозитории файлов нет, в PATHS_old были прописаны
     # # пути с чужой машины (D:/Logiways/Диск/TCL Baltic Line/...).
     # # Положите PDF в data/ и раскомментируйте.
-    ("tcl_baltic_line", "TLC Baltic Line", tcl_baltic_line_parser.parse,
-     ("data/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf",)),
-    ("tcl_asia_line", "TLC Baltic Line", tcl_asia_line_parser.parse,
-     ("data/КП Февраль 2026 ASIA LINE   (2).pdf",)),
+    # ("tcl_baltic_line", "TLC Baltic Line", tcl_baltic_line_parser.parse,
+    #  ("data/КП Февраль 2025г. BALTIC LINE  01-28 (1) (3).pdf",)),
+    # ("tcl_asia_line", "TLC Baltic Line", tcl_asia_line_parser.parse,
+    #  ("data/КП Февраль 2026 ASIA LINE   (2).pdf",)),
 
-    ("logoper", "Логопер", logoper_parser.parse,
-     ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - "
-      "Мск Екб Нск от 30.04.2026.pdf",)),
+    # ("logoper", "Логопер", logoper_parser.parse,
+    #  ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - "
+    #   "Мск Екб Нск от 30.04.2026.pdf",)),
 
-    ("khasan", "KHASAN", khasan_parser.parse,
-     ("data/хасан2204.docx",)),
+    # ("khasan", "KHASAN", khasan_parser.parse,
+    #  ("data/хасан2204.docx",)),
 
     # # EuroSib тянет прайс и расписание со своего сайта (cont.eurosib.biz).
     # # Требуется доступ в интернет; локальные копии лежат в download/.
-    ("eurosib", "EuroSib", eurosib_parser.parse, ()),
+    # ("eurosib", "EuroSib", eurosib_parser.parse, ()),
 
-    ("grandlog", "GrandLog", grandlog_parser.parse,
-     ("data/GrandLog ЖД.pdf",)),
+    # ("grandlog", "GrandLog", grandlog_parser.parse,
+    #  ("data/GrandLog ЖД.pdf",)),
 
-    ("mohill", "Mohill Rus", mohill_parser.parse,
-     ("data/Notice MOHILL Line Far East JUNE (25.05).xlsx",)),
+    # ("mohill", "Mohill Rus", mohill_parser.parse,
+    #  ("data/Notice MOHILL Line Far East JUNE (25.05).xlsx",)),
 
-    ("tk_logistika", "ТК Логистика", tk_logistika_parser.parse, ()),
+    # ("tk_logistika", "ТК Логистика", tk_logistika_parser.parse, ()),
 
-    ("garant_intermodal_1", "Гарант Интермодал", garant_intermodal_parser.parse,
-     ("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf",)),
-    ("garant_intermodal_2", "Гарант Интермодал", garant_intermodal_parser.parse,
-     ("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
-    ("garant_intermodal_3", "Гарант Интермодал", garant_intermodal_parser.parse,
-     ("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf",)),
-    ("garant_intermodal_4", "Гарант Интермодал", garant_intermodal_parser.parse,
-     ("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
+    # ("garant_intermodal_1", "Гарант Интермодал", garant_intermodal_parser.parse,
+    #  ("data/01.04.-30.04.Шанхай-Пусан-СOC-cтанции.pdf",)),
+    # ("garant_intermodal_2", "Гарант Интермодал", garant_intermodal_parser.parse,
+    #  ("data/01.05.-15.05.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
+    # ("garant_intermodal_3", "Гарант Интермодал", garant_intermodal_parser.parse,
+    #  ("data/01.05.-15.05.-Шанхай-Пусан-жд-Москва.pdf",)),
+    # ("garant_intermodal_4", "Гарант Интермодал", garant_intermodal_parser.parse,
+    #  ("data/10.04.-30.04.-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
 
-    ("panda", "Panda Express Line", panda_parser.parse,
-     ("data/Панда.pdf",)),
+    # ("panda", "Panda Express Line", panda_parser.parse,
+    #  ("data/Панда.pdf",)),
 
-    ("sansko", "Sunsko", sansko_parser.parse,
-     ("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf",)),
+    # ("sansko", "Sunsko", sansko_parser.parse,
+    #  ("data/01.06 - 15.06 RUS Sunsko Far East Intermodal Service.pdf",)),
 
     # --- ОАО «Владморрыбпорт»: шесть прайсов, по одной функции на файл ---
     # ВНИМАНИЕ: это СКАНЫ без текстового слоя, парсер работает через OCR.
     # Нужны tesseract-ocr, tesseract-ocr-rus и poppler-utils; полный прогон
     # шести файлов занимает около 4 минут.
 
-    ("vmrp_povagonka", "ОАО «Владморрыбпорт»", vmrp_parser.parse_povagonka,
-     ("data/повагонка с 05.02.2026.pdf",)),
-    ("vmrp_ukp_15_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_15_07,
-     ("data/Тарифы УКП с 15.07.26.pdf",)),
-    ("vmrp_ukp_01_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_01_07,
-     ("data/УКП с 01.07.2026.pdf",)),
-    ("vmrp_ukp_auto", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_auto_01_07,
-     ("data/УКП с авто с 01.07.2026.pdf",)),
-    ("vmrp_inya_01_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_inya_01_07,
-     ("data/УКП Иня Восточная с 01.07.2026.pdf",)),
-    ("vmrp_inya_15_05", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_inya_15_05,
-     ("data/УКП Иня с 15.05.2026.pdf",)),
-    ("vmrp_ukp_01_08", "ОАО «Владморрыбпорт»", vmrp_01_08_parser.parse,
-     ("data/Тарифы укп с 01.08.2026.pdf",)),
-    ("vmrp_all", "ОАО «Владморрыбпорт»", vmrp_parser.parse_all, ()),
-    ("garant_local", "Гарант Интермодал", garant_local_parser.parse,
-     ("data/01.08.-31.08-SOC-Шанхай-Пусан-Местная-выдача.pdf",)),
-    ("garant_coc_imp_exp", "Гарант Интермодал", garant_coc_parser.parse,
-     ("data/01.08.-31.08.-СОС-импортэкспорт.pdf",)),
-    ("garant_vrangel_st", "Гарант Интермодал", garant_vrangel_parser.parse,
-     ("data/01.08.-31.08.-SOC-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
-    ("garant_vmrp_st", "Гарант Интермодал", garant_vmrp_parser.parse,
-     ("data/01.08.-31.08.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
+    # ("vmrp_povagonka", "ОАО «Владморрыбпорт»", vmrp_parser.parse_povagonka,
+    #  ("data/повагонка с 05.02.2026.pdf",)),
+    # ("vmrp_ukp_15_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_15_07,
+    #  ("data/Тарифы УКП с 15.07.26.pdf",)),
+    # ("vmrp_ukp_01_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_01_07,
+    #  ("data/УКП с 01.07.2026.pdf",)),
+    # ("vmrp_ukp_auto", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_auto_01_07,
+    #  ("data/УКП с авто с 01.07.2026.pdf",)),
+    # ("vmrp_inya_01_07", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_inya_01_07,
+    #  ("data/УКП Иня Восточная с 01.07.2026.pdf",)),
+    # ("vmrp_inya_15_05", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_inya_15_05,
+    #  ("data/УКП Иня с 15.05.2026.pdf",)),
+
+    # ("vmrp_ukp_01_08", "ОАО «Владморрыбпорт»", vmrp_01_08_parser.parse,
+    #  ("data/Тарифы укп с 01.08.2026.pdf",)),
+    # ("vmrp_all", "ОАО «Владморрыбпорт»", vmrp_parser.parse_all, ()),
+    # ("garant_local", "Гарант Интермодал", garant_local_parser.parse,
+    #  ("data/01.08.-31.08-SOC-Шанхай-Пусан-Местная-выдача.pdf",)),
+    # ("garant_coc_imp_exp", "Гарант Интермодал", garant_coc_parser.parse,
+    #  ("data/01.08.-31.08.-СОС-импортэкспорт.pdf",)),
+    # ("garant_vrangel_st", "Гарант Интермодал", garant_vrangel_parser.parse,
+    #  ("data/01.08.-31.08.-SOC-Шанхай-Пусан-Врангель-станции-SOC.pdf",)),
+    # ("garant_vmrp_st", "Гарант Интермодал", garant_vmrp_parser.parse,
+    #  ("data/01.08.-31.08.-SOC-ШанхайПусан-ВМРП-Станц.назнач.pdf",)),
+    # ("panda_stavki", "Panda Express Line", panda_stavki_parser.parse,
+    #  ("data/stavki.pdf",)),
+    ("fesco_fbss", "FESCO", fesco_fbss_parser.parse, ("data/fbss.pdf",)),
+    ("fesco_jtsl", "FESCO", fesco_jtsl_parser.parse, ("data/jtsl.pdf",)),
+    ("fesco_fcdl", "FESCO", fesco_fcdl_parser.parse, ("data/fcdl.pdf",)),
+    ("fesco_ftbs", "FESCO", fesco_ftbs_parser.parse, ("data/ftbs-gebze.xlsx",)),
 ]
 
 # Компании, которые должны получиться на выходе (сверяется в конце прогона).
