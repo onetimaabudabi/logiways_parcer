@@ -210,5 +210,20 @@
     "address": null,
     "test": true,
     "missing": ["inn", "ogrn", "address"]
+  },
+  {
+    "name": "multiwell.net",
+    "contact_first_name": "Тест",
+    "contact_last_name": "Тестов",
+    "phone": "+8612345678900",
+    "email": "info@multiwell.net",
+    "languages": ["ru", "en"],
+    "parsers": ["multiwell_truck", "multiwell_rail"],
+    "website": "www.multiwell.net",
+    "inn": null,
+    "ogrn": null,
+    "address": null,
+    "test": true,
+    "missing": ["inn", "ogrn", "address"]
   }
 ]
