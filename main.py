@@ -24,10 +24,7 @@ import pandas as pd
 from parsers.utils import segments_to_df
 
 # --- Парсеры 16 «старых» компаний ------------------------------------------
-from parsers.multiwell_truck import parse as parse_multiwell_truck
-from parsers.multiwell_rail import parse as parse_multiwell_rail
-from parsers.vladmorrybport_povagonka import parse as parse_povagonka
-from parsers.vladmorrybport_ukp import parse as parse_ukp
+import parsers.eurosib as eurosib_parser 
 import parsers.panda_stavki as panda_stavki_parser
 import parsers.garant_intermodal_soc_shanghai_busan_local as garant_local_parser
 import parsers.garant_intermodal_coc_import_export as garant_coc_parser
@@ -42,8 +39,6 @@ import parsers.rustrans as rustrans_parser                  # РусТранс �
 import parsers.poseidon as poseidon_parser                  # Посейдон
 import parsers.railtrust as railtrust_parser                # Рейл Траст
 import parsers.ametist_line as ametist_line_parser          # Ametist Line
-import parsers.ametist_freight as ametist_freight_parser    # Ametist Line
-import parsers.ametist_port_tariffs as ametist_port_parser  # Ametist Line
 import parsers.fesco as fesco_parser                        # FESCO
 import parsers.tcl_baltic_line as tcl_baltic_line_parser    # TLC Baltic Line
 import parsers.tcl_asia_line as tcl_asia_line_parser        # TLC Baltic Line
@@ -58,6 +53,10 @@ import parsers.panda as panda_parser                        # Panda Express Line
 import parsers.sansko as sansko_parser                      # Sunsko
 import parsers.vladmorrybport as vmrp_parser                # ОАО «Владморрыбпорт»
 import parsers.vladmorrybport_01_08 as vmrp_01_08_parser    # ОАО «Владморрыбпорт»
+
+# --- multiwell.net (Китай): авто и ж/д -------------------------------------
+from parsers.multiwell_truck import parse as parse_multiwell_truck
+from parsers.multiwell_rail import parse as parse_multiwell_rail
 
 
 # Реестр: (метка, компания, вызываемое, аргументы).
@@ -77,21 +76,6 @@ PARSERS = [
 
     # ("ametist_line", "Ametist Line", ametist_line_parser.parse,
     #  ("data/February 2026 Rates (2).pdf",)),
-
-    # Ametist Line: фрахт (LIFO/FIFO) + THC, июль и август 2026
-    # ("ametist_freight", "Ametist Line", ametist_freight_parser.parse,
-    #  ("data/Июль-Август 2026.pdf",)),
-
-    # Ametist Line: портовые тарифы (THC, хранение, демередж, детеншн) —
-    # transport_type="service", маршрута нет
-    # ("ametist_port_tariffs", "Ametist Line", ametist_port_parser.parse,
-    #  ("data/Ametists_port_tariffs_catalog_08042026_incl_Isr.pdf",)),
-    # ("vladmorrybport_povagonka", "ОАО «Владморрыбпорт»", parse_povagonka,
-    # ("data/Повагонка с 18.08.2026.pdf",)),
-    # ("vladmorrybport_ukp", "ОАО «Владморрыбпорт»", parse_ukp,
-    # ("data/ТЭУ УКП С 15.08.2026.pdf",)),
-
-    
 
     # ("fesco", "FESCO", fesco_parser.parse,
     #  ("data/FESCO Shuttles THROUGH from 01.02.2026 (COC RUR) "
@@ -156,11 +140,6 @@ PARSERS = [
     #  ("data/УКП Иня Восточная с 01.07.2026.pdf",)),
     # ("vmrp_inya_15_05", "ОАО «Владморрыбпорт»", vmrp_parser.parse_ukp_inya_15_05,
     #  ("data/УКП Иня с 15.05.2026.pdf",)),
-    ("multiwell_truck", "multiwell.net", parse_multiwell_truck,
-    ("data/multiwell.net.txt",)),
-
-    ("multiwell_rail", "multiwell.net", parse_multiwell_rail,
-    ("data/multiwell.net2.txt",)),
 
     # ("vmrp_ukp_01_08", "ОАО «Владморрыбпорт»", vmrp_01_08_parser.parse,
     #  ("data/Тарифы укп с 01.08.2026.pdf",)),
@@ -179,6 +158,16 @@ PARSERS = [
     # ("fesco_jtsl", "FESCO", fesco_jtsl_parser.parse, ("data/jtsl.pdf",)),
     # ("fesco_fcdl", "FESCO", fesco_fcdl_parser.parse, ("data/fcdl.pdf",)),
     # ("fesco_ftbs", "FESCO", fesco_ftbs_parser.parse, ("data/ftbs-gebze.xlsx",)),
+
+    # Парсеры универсальны: формат (ж/д «FOB ...» или авто «Город - Город: $цена»)
+    # определяется по строке, поэтому порядок файлов роли не играет.
+    # ("multiwell_truck", "multiwell.net", parse_multiwell_truck,
+    #  ("data/multiwell.net.txt",)),
+    # ("multiwell_rail", "multiwell.net", parse_multiwell_rail,
+    #  ("data/multiwell.net2.txt",)),
+    # ("eurosib_web", "EuroSib (web)", eurosib_web_parser.parse_web, ()),
+    
+    ("eurosib_pdf", "EuroSib (PDF)", eurosib_parser.parse, ("data/Тарифы на услуги Евросиб из портов Китая, ЮВА, Индии, Японии через порты ДВ_с 22.07.2026.pdf",)),
 ]
 
 # Компании, которые должны получиться на выходе (сверяется в конце прогона).
