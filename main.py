@@ -24,6 +24,10 @@ import pandas as pd
 from parsers.utils import segments_to_df
 
 # --- Парсеры 16 «старых» компаний ------------------------------------------
+import parsers.transcontainer_1727 as tc_1727_parser        # ТрансКонтейнер (Клещиха, ИСХ-1727)
+import parsers.transcontainer_1981 as tc_1981_parser        # ТрансКонтейнер (Клещиха, ИСХ-1981)
+import parsers.transcontainer_1768 as tc_1768_parser        # ТрансКонтейнер (сквозные ставки, ИСХ-1768)
+import parsers.transcontainer_prices as tc_prices_parser    # ТрансКонтейнер (прайс ТЭУ с 01.07.2026)
 import parsers.eurosib as eurosib_parser 
 import parsers.panda_stavki as panda_stavki_parser
 import parsers.garant_intermodal_soc_shanghai_busan_local as garant_local_parser
@@ -167,7 +171,12 @@ PARSERS = [
     #  ("data/multiwell.net2.txt",)),
     # ("eurosib_web", "EuroSib (web)", eurosib_web_parser.parse_web, ()),
     
-    ("eurosib_pdf", "EuroSib (PDF)", eurosib_parser.parse, ("data/Тарифы на услуги Евросиб из портов Китая, ЮВА, Индии, Японии через порты ДВ_с 22.07.2026.pdf",)),
+    # ("eurosib_pdf", "EuroSib (PDF)", eurosib_parser.parse, ("data/Тарифы на услуги Евросиб из портов Китая, ЮВА, Индии, Японии через порты ДВ_с 22.07.2026.pdf",)),
+    ("transcontainer_1727", "ТрансКонтейнер", tc_1727_parser.parse, ("data/1727.pdf",)),
+    ("transcontainer_1981", "ТрансКонтейнер", tc_1981_parser.parse, ("data/1981.pdf",)),
+    ("transcontainer_1768", "ТрансКонтейнер", tc_1768_parser.parse, ("data/1768.pdf",)),
+    # ВНИМАНИЕ: прайс — скан, разбирается через OCR (~2,5 минуты)
+    ("transcontainer_prices", "ТрансКонтейнер", tc_prices_parser.parse, ()),
 ]
 
 # Компании, которые должны получиться на выходе (сверяется в конце прогона).
