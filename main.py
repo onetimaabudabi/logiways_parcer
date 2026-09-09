@@ -24,6 +24,11 @@ import pandas as pd
 from parsers.utils import segments_to_df
 
 # --- Парсеры 16 «старых» компаний ------------------------------------------
+import parsers.garant_intermodal_soc_taicang_ningbo_local as garant_sep_local_parser
+import parsers.garant_intermodal_soc_taicang_ningbo_vrangel_stations as garant_sep_vrangel_parser
+import parsers.garant_intermodal_soc_taicang_ningbo_vmrp_stations as garant_sep_vmrp_parser
+import parsers.garant_intermodal_coc_import_sep as garant_sep_coc_parser
+
 import parsers.hub_shipping_dropoff as hub_dropoff_parser   
 import parsers.sansko_august as sansko_august_parser        # Санско (прайс 01.08–31.08.2026)
 import parsers.virgin_shipping as virgin_parser
@@ -189,50 +194,62 @@ PARSERS = [
     
     # ("eurosib_pdf", "EuroSib (PDF)", eurosib_parser.parse, ("data/Тарифы на услуги Евросиб из портов Китая, ЮВА, Индии, Японии через порты ДВ_с 22.07.2026.pdf",)),
 
-    ("transcontainer_1727", "ТрансКонтейнер", tc_1727_parser.parse, ("data/1727.pdf",)),
-    ("transcontainer_1981", "ТрансКонтейнер", tc_1981_parser.parse, ("data/1981.pdf",)),
-    ("transcontainer_1768", "ТрансКонтейнер", tc_1768_parser.parse, ("data/1768.pdf",)),
-    ("transcontainer_prices", "ТрансКонтейнер", tc_prices_parser.parse, ()),
+    # ("transcontainer_1727", "ТрансКонтейнер", tc_1727_parser.parse, ("data/1727.pdf",)),
+    # ("transcontainer_1981", "ТрансКонтейнер", tc_1981_parser.parse, ("data/1981.pdf",)),
+    # ("transcontainer_1768", "ТрансКонтейнер", tc_1768_parser.parse, ("data/1768.pdf",)),
+    # ("transcontainer_prices", "ТрансКонтейнер", tc_prices_parser.parse, ()),
 
-    ("grandlog_sea_rail", "ГрандЛог", grandlog_sea_rail_parser.parse,
-    ("data/КП Море + повагонка с 15 августа.pdf",)),
+    # ("grandlog_sea_rail", "ГрандЛог", grandlog_sea_rail_parser.parse,
+    # ("data/КП Море + повагонка с 15 августа.pdf",)),
 
-    ("grandlog_ukp", "ГрандЛог", grandlog_ukp_parser.parse,
-    ("data/УКП CY ДВ - ст FOR МСК_НСК_с 15 по 31 августа 2026 г.pdf",)),
+    # ("grandlog_ukp", "ГрандЛог", grandlog_ukp_parser.parse,
+    # ("data/УКП CY ДВ - ст FOR МСК_НСК_с 15 по 31 августа 2026 г.pdf",)),
     
-    ("grandlog_povagonka", "ГрандЛог", grandlog_povagonka_parser.parse,
-    ("data/(ПОВАГОНКА) GrandLog ЖД (15-31).pdf",)),
+    # ("grandlog_povagonka", "ГрандЛог", grandlog_povagonka_parser.parse,
+    # ("data/(ПОВАГОНКА) GrandLog ЖД (15-31).pdf",)),
 
-    # готов
-	("khasan_import_august", "Хасан", khasan_aug_parser.parse, ()), ("khasan_rail_special", "Хасан", 	khasan_rail_parser.parse, ()),
+    # # готов
+	# ("khasan_import_august", "Хасан", khasan_aug_parser.parse, ()), ("khasan_rail_special", "Хасан", 	khasan_rail_parser.parse, ()),
 
-    # готов
-    ("railtrust_sinokor", "Рейл Траст", railtrust_sinokor_parser.parse,
-    ("data/Прайс Рейл Траст Синокор с 16-08-2026.pdf",)),
+    # # готов
+    # ("railtrust_sinokor", "Рейл Траст", railtrust_sinokor_parser.parse,
+    # ("data/Прайс Рейл Траст Синокор с 16-08-2026.pdf",)),
 
-    # готов 
-    ("tnl_rates", "TNL", tnl_parser.parse, ("data/tnl.png",)),
+    # # готов 
+    # ("tnl_rates", "TNL", tnl_parser.parse, ("data/tnl.png",)),
 
-    # готов
-    ("logoper_intermodal", "Логопер", logoper_intermodal_parser.parse,
-    ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - "
-    "Мск Екб Нск от 17.08.2026.pdf",)),
+    # # готов
+    # ("logoper_intermodal", "Логопер", logoper_intermodal_parser.parse,
+    # ("data/ИНТЕРМОДАЛЬНЫЕ тарифы ЛОГОПЕР CY-FOR станции ДВ - "
+    # "Мск Екб Нск от 17.08.2026.pdf",)),
 
-    # готов
-    ("tdg_august", "Транспорт Девелопмент Групп", tdg_august_parser.parse,
-    ("data/ТДГ.docx",)),
+    # # готов
+    # ("tdg_august", "Транспорт Девелопмент Групп", tdg_august_parser.parse,
+    # ("data/ТДГ.docx",)),
 
-    # готово
-    ("virgin_shipping", "VIRGIN", virgin_parser.parse,
-    ("data/Notice VIRGIN Shipping Line Far East AUGUST (06.08).xlsx",)),
+    # # готово
+    # ("virgin_shipping", "VIRGIN", virgin_parser.parse,
+    # ("data/Notice VIRGIN Shipping Line Far East AUGUST (06.08).xlsx",)),
 
-    # готов
-    ("sansko_august", "Санско", sansko_august_parser.parse,
-    ("data/RATES 01.08 - 31.08 RUS Sunsko Far East Intermodal Service.pdf",)),
+    # # готов
+    # ("sansko_august", "Санско", sansko_august_parser.parse,
+    # ("data/RATES 01.08 - 31.08 RUS Sunsko Far East Intermodal Service.pdf",)),
     
-    # готов
-    ("hub_shipping_dropoff", "HUB Shipping", hub_dropoff_parser.parse,
-    ("data/HUB-Shipping_Drop-Off-Tariffs_RUS-16.08.2026-–-31.08.2026.pdf",)),
+    # # готов
+    # ("hub_shipping_dropoff", "HUB Shipping", hub_dropoff_parser.parse,
+    # ("data/HUB-Shipping_Drop-Off-Tariffs_RUS-16.08.2026-–-31.08.2026.pdf",)),
+
+    ("garant_sep_local", "Гарант Интермодал", garant_sep_local_parser.parse,
+    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Местная-выдача_upd-070926.pdf",)),
+
+    ("garant_sep_vrangel_st", "Гарант Интермодал", garant_sep_vrangel_parser.parse,
+    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Врангель-станции-SOC_upd-070926.pdf",)),
+
+    ("garant_sep_vmrp_st", "Гарант Интермодал", garant_sep_vmrp_parser.parse,
+    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-ВМРП-Станц.назнач_upd-070926.pdf",)),
+
+    ("garant_sep_coc_import", "Гарант Интермодал", garant_sep_coc_parser.parse,
+    ("data/01.09.-30.09.-СОС-импорт-upd-070926.pdf",)),
 ]
 
 # Компании, которые должны получиться на выходе (сверяется в конце прогона).
