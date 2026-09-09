@@ -29,6 +29,10 @@ import parsers.garant_intermodal_soc_taicang_ningbo_vrangel_stations as garant_s
 import parsers.garant_intermodal_soc_taicang_ningbo_vmrp_stations as garant_sep_vmrp_parser
 import parsers.garant_intermodal_coc_import_sep as garant_sep_coc_parser
 
+import parsers.eurosib_export_sep as eurosib_export_sep_parser
+import parsers.eurosib_august_with_apps as eurosib_apps_parser
+
+
 import parsers.hub_shipping_dropoff as hub_dropoff_parser   
 import parsers.sansko_august as sansko_august_parser        # Санско (прайс 01.08–31.08.2026)
 import parsers.virgin_shipping as virgin_parser
@@ -239,17 +243,25 @@ PARSERS = [
     # ("hub_shipping_dropoff", "HUB Shipping", hub_dropoff_parser.parse,
     # ("data/HUB-Shipping_Drop-Off-Tariffs_RUS-16.08.2026-–-31.08.2026.pdf",)),
 
-    ("garant_sep_local", "Гарант Интермодал", garant_sep_local_parser.parse,
-    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Местная-выдача_upd-070926.pdf",)),
+    # ("garant_sep_local", "Гарант Интермодал", garant_sep_local_parser.parse,
+    # ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Местная-выдача_upd-070926.pdf",)),
 
-    ("garant_sep_vrangel_st", "Гарант Интермодал", garant_sep_vrangel_parser.parse,
-    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Врангель-станции-SOC_upd-070926.pdf",)),
+    # ("garant_sep_vrangel_st", "Гарант Интермодал", garant_sep_vrangel_parser.parse,
+    # ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-Врангель-станции-SOC_upd-070926.pdf",)),
 
-    ("garant_sep_vmrp_st", "Гарант Интермодал", garant_sep_vmrp_parser.parse,
-    ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-ВМРП-Станц.назнач_upd-070926.pdf",)),
+    # ("garant_sep_vmrp_st", "Гарант Интермодал", garant_sep_vmrp_parser.parse,
+    # ("data/01.09.-30.09.-SOC-Тайцан-Нингбо-ВМРП-Станц.назнач_upd-070926.pdf",)),
 
-    ("garant_sep_coc_import", "Гарант Интермодал", garant_sep_coc_parser.parse,
-    ("data/01.09.-30.09.-СОС-импорт-upd-070926.pdf",)),
+    # ("garant_sep_coc_import", "Гарант Интермодал", garant_sep_coc_parser.parse,
+    # ("data/01.09.-30.09.-СОС-импорт-upd-070926.pdf",)),
+
+    ("eurosib_export_sep", "EuroSib", eurosib_export_sep_parser.parse,
+    ("data/НОТИС_ЭКСПОРТ_c 07.09.2026.pdf",)),
+
+    ("eurosib_august_apps", "EuroSib", eurosib_apps_parser.parse,
+    ("data/Тарифы на услуги Евросиб из портов Китая, ЮВА, Индии, Японии "
+      "через порты ДВ_с 18.08.2026 + приложения 1,2.pdf",)),
+
 ]
 
 # Компании, которые должны получиться на выходе (сверяется в конце прогона).
