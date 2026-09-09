@@ -396,18 +396,19 @@ class Tokens:
     token_type: str = "Bearer"
 
 # --- Новые структуры для транспортных компаний ---
-def fallback_contacts(company_name: str) -> tuple:
+def fallback_contacts(company_name: str, salt: str = "") -> tuple:
     """Уникальные запасные телефон и email на основе названия компании.
 
     Один и тот же +71234567890 / test@example.com у десятка компаний приводил
-    к 500: у сервера, судя по asyncpg-трейсбеку, уникальный индекс на этих
-    полях, и вторая же компания с тем же телефоном не создавалась.
+    к 500: у сервера уникальный индекс на этих полях.
+
+    salt — необязательная «соль». Нужна, когда детерминированная пара уже
+    занята ранее созданной записью (её не нашёл поиск по имени): с солью
+    получаем другую пару и не упираемся в тот же конфликт.
     """
-    digest = hashlib.md5(str(company_name).encode("utf-8")).hexdigest()
+    digest = hashlib.md5(f"{company_name}{salt}".encode("utf-8")).hexdigest()
     suffix = int(digest[:8], 16) % 10_000_000
     slug = re.sub(r"[^a-z0-9]+", "-", str(company_name).lower()).strip("-") or "company"
-    # В slug остаётся только латиница, поэтому кириллические названия
-    # схлопывались в одну строку — добавляем хеш, чтобы адрес был уникален.
     return f"+7{suffix:010d}"[:12], f"{slug[:30]}-{digest[:6]}@example.com"
 
 
@@ -439,6 +440,7 @@ ORGANIZATION_TYPES = (ORGANIZATION_TYPE_LEGAL_ENTITY,
 
 REQUEST_TIMEOUT = 30
 MAX_RETRIES = 3
+MAX_CONTACT_ATTEMPTS = 3
 RETRY_BACKOFF = 2.0
 COMPANIES_FILES = ("companies_all.json", "companies.json")
 
@@ -3001,8 +3003,6 @@ if __name__ == "__main__":
                 skipped += 1
             continue
         trans_company_id = client.get_transport_company_by_name(trans_company["name"])
-        if trans_company_id:
-            found += 1
         if trans_company_id is None:
             print("\n=== Создание новой организации ===")
             _name = trans_company.get("name") or trans_company.get("catalog_name")
@@ -3010,25 +3010,45 @@ if __name__ == "__main__":
                 print("Пропуск записи без названия:", trans_company)
                 continue
             _inn = trans_company.get("inn")
-            new_org = TransportCompaniesCreate(
-                name=_name,
-                # Запасные значения делаем уникальными для каждой компании —
-                # общий +71234567890 приводил к 500 на уникальном индексе.
-                phone=normalize_phone(trans_company.get("phone"),
-                                      fallback_contacts(_name)[0]),
-                email=normalize_email(trans_company.get("email"),
-                                      fallback_contacts(_name)[1]),
-                contact_first_name=(trans_company.get("contact_first_name") or "").strip() or "Тест",
-                contact_last_name=(trans_company.get("contact_last_name") or "").strip() or "Тестов",
-                contact_middle_name=(trans_company.get("contact_middle_name") or "").strip() or None,
-                inn=str(_inn) if _inn else None,
-                organization_type=trans_company.get(
-                    "organization_type", ORGANIZATION_TYPE_LEGAL_ENTITY
-                ),
-            )
-            created_org = client.create_transport_companies(new_org)
+
+            # ВАЖНО: phone/email больше НЕ берём из JSON.
+            # На сервере уникальные индексы по телефону и e-mail, а контакты из
+            # companies.json часто уже заняты ранее созданными организациями
+            # (случай «Хасан»: +79153938136 / sales4@khasanllc.pro).
+            # Теперь для КАЖДОЙ новой компании генерим свою пару.
+            _phone, _email = fallback_contacts(_name)
+            print(f"  Контакты сгенерированы: {_phone} / {_email}")
+
+            created_org = None
+            for _attempt in range(1, MAX_CONTACT_ATTEMPTS + 1):
+                new_org = TransportCompaniesCreate(
+                    name=_name,
+                    phone=_phone,
+                    email=_email,
+                    contact_first_name=(trans_company.get("contact_first_name") or "").strip() or "Тест",
+                    contact_last_name=(trans_company.get("contact_last_name") or "").strip() or "Тестов",
+                    contact_middle_name=(trans_company.get("contact_middle_name") or "").strip() or None,
+                    inn=str(_inn) if _inn else None,
+                    organization_type=trans_company.get(
+                        "organization_type", ORGANIZATION_TYPE_LEGAL_ENTITY
+                    ),
+                )
+                created_org = client.create_transport_companies(new_org)
+                if created_org:
+                    break
+                if _attempt < MAX_CONTACT_ATTEMPTS:
+                    # неудачная попытка не должна светиться в отчёте,
+                    # если следующая пройдёт успешно
+                    client.unresolved_companies = [
+                        _it for _it in client.unresolved_companies
+                        if _it.get("name") != _name
+                    ]
+                    _phone, _email = fallback_contacts(
+                        _name, salt=f"{_attempt}-{time.time_ns()}")
+                    print(f"  Повтор с новыми контактами: {_phone} / {_email}")
+
             if created_org:
-                trans_company_id = created_org.get('id')
+                trans_company_id = created_org.get("id")
                 print(f"Организация создана. ID: {trans_company_id}")
             else:
                 print("Не удалось создать организацию.", _name)
